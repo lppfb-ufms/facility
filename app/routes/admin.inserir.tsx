@@ -27,7 +27,6 @@ import { auth, lucia } from "~/.server/auth";
 import { db } from "~/.server/db/connection";
 import {
   caracteristicasAdicionaisTable,
-  casoSucessoTable,
   funcaoBiologicaTable,
   nomePopularTable,
   organismoTable,
@@ -78,7 +77,6 @@ export async function action({ request }: ActionFunctionArgs) {
     organismo,
     funcaoBiologica,
     caracteristicasAdicionais,
-    casoSucesso,
     publicacao,
     ...peptideo
   } = submission.value;
@@ -130,7 +128,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   for (const { table, values } of [
     { table: funcaoBiologicaTable, values: funcaoBiologica },
-    { table: casoSucessoTable, values: casoSucesso },
     {
       table: caracteristicasAdicionaisTable,
       values: caracteristicasAdicionais,
@@ -231,14 +228,6 @@ const schema = object({
       }),
     ),
   ),
-  casoSucesso: optional(
-    array(
-      object({
-        id: optional(pipe(number(), integer())),
-        value: string(),
-      }),
-    ),
-  ),
   caracteristicasAdicionais: optional(
     array(
       object({
@@ -288,7 +277,6 @@ export default function InsertPanel() {
   const nomesPopulares = organismo.nomePopular.getFieldList();
   const publicacao = fields.publicacao.getFieldList();
   const funcoesBiologicas = fields.funcaoBiologica.getFieldList();
-  const casosSucesso = fields.casoSucesso.getFieldList();
   const caracteristicasAdicionais =
     fields.caracteristicasAdicionais.getFieldList();
 
@@ -548,48 +536,6 @@ export default function InsertPanel() {
               </div>
             );
           })}
-        </fieldset>
-
-        <fieldset {...getFieldsetProps(fields.casoSucesso)}>
-          <legend className="flex w-full items-center gap-4 border-b-2 border-neutral-100 text-xl font-bold text-cyan-600">
-            Casos de Sucesso
-            <button
-              className="my-2 flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 px-2 py-1 text-sm font-bold text-white"
-              {...form.insert.getButtonProps({
-                name: fields.casoSucesso.name,
-              })}
-            >
-              <TbPlus /> adicionar
-            </button>
-          </legend>
-          <ul className="mt-2 flex w-full flex-col gap-3">
-            {casosSucesso.map((item, index) => {
-              const caso = item.getFieldset();
-              return (
-                <li key={item.key} className="flex flex-col">
-                  <input
-                    {...getInputProps(caso.id, { type: "hidden" })}
-                    key={undefined}
-                  />
-                  <TextAreaInput
-                    label={`Caso nº ${index + 1}`}
-                    rows={4}
-                    {...getTextareaProps(caso.value)}
-                  />
-                  <FormErrorMessage errors={caso.value.errors} />
-                  <button
-                    className="mt-2 flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-red-800 to-red-700 px-2 py-1 text-sm font-bold text-white"
-                    {...form.remove.getButtonProps({
-                      name: fields.casoSucesso.name,
-                      index,
-                    })}
-                  >
-                    <TbTrash /> apagar
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
         </fieldset>
 
         <fieldset {...getFieldsetProps(fields.caracteristicasAdicionais)}>

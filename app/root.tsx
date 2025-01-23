@@ -64,7 +64,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="overflow-y-scroll bg-gradient-to-r from-cyan-900 to-cyan-600">
+      <body className="overflow-y-scroll bg-gradient-to-l from-cyan-700 to-cyan-600">
         {children}
         <ScrollRestoration />
         <Scripts />

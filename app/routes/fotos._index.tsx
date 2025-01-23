@@ -1,4 +1,4 @@
-import { NavLink, json, useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData } from "@remix-run/react";
 import { TbPhotoPlus } from "react-icons/tb";
 import { db } from "~/.server/db/connection";
 import { imageMetadataTable } from "~/.server/db/schema";
@@ -10,7 +10,7 @@ export async function loader() {
       alt: imageMetadataTable.alt,
     })
     .from(imageMetadataTable);
-  return json(images);
+  return images;
 }
 
 export default function Fotos() {

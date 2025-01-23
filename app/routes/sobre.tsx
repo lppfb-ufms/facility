@@ -12,9 +12,9 @@ export default function Sobre() {
     <Container title="Informações sobre o projeto">
       <div className="flex flex-col gap-4 bg-white py-3 font-sans sm:p-10">
         <p>A ser preenchido.</p>
-        <h2 className="text-xl font-bold">Financiadores</h2>
+        <h2 className="text-2xl font-bold">Financiadores</h2>
         <p>A ser preenchido.</p>
-        <h2 className="text-xl font-bold">Contato</h2>
+        <h2 className="text-2xl font-bold">Contato</h2>
         <ul className="flex flex-col gap-5">
           <li className="flex gap-3">
             <TbBrandInstagram size="2.5rem" className="min-w-[2.5rem]" />

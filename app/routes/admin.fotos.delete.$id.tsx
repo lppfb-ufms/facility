@@ -1,5 +1,5 @@
 import { rm } from "node:fs";
-import { type ActionFunctionArgs, json, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import { eq } from "drizzle-orm";
 import { auth, lucia } from "~/.server/auth";
 import { db } from "~/.server/db/connection";
@@ -32,7 +32,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
 
   const id = params.id;
   if (!id) {
-    return json({ message: "Id inválido", ok: false });
+    return { message: "Id inválido", ok: false };
   }
 
   const metadata = await db.query.imageMetadataTable.findFirst({
@@ -40,7 +40,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
   });
 
   if (!metadata) {
-    return json({ message: "Imagem não encontrada", ok: false });
+    return { message: "Imagem não encontrada", ok: false };
   }
 
   rm(
@@ -48,7 +48,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
     (err) => {
       if (err) {
         console.error(err);
-        return json({ message: "Falha ao excluir a imagem", ok: false });
+        return { message: "Falha ao excluir a imagem", ok: false };
       }
     },
   );

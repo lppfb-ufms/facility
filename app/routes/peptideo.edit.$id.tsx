@@ -36,7 +36,6 @@ import { auth, lucia } from "~/.server/auth";
 import { db } from "~/.server/db/connection";
 import {
   caracteristicasAdicionaisTable,
-  casoSucessoTable,
   funcaoBiologicaTable,
   nomePopularTable,
   organismoTable,
@@ -102,7 +101,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
           publicacao: true,
         },
       },
-      casoSucesso: true,
     },
   });
 
@@ -360,7 +358,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   for (const { table, values } of [
     { table: funcaoBiologicaTable, values: funcaoBiologica },
-    { table: casoSucessoTable, values: casoSucesso },
     {
       table: caracteristicasAdicionaisTable,
       values: caracteristicasAdicionais,
@@ -485,7 +482,6 @@ export default function EditPeptideo() {
   const nomesPopulares = organismo.nomePopular.getFieldList();
   const publicacao = fields.publicacao.getFieldList();
   const funcoesBiologicas = fields.funcaoBiologica.getFieldList();
-  const casosSucesso = fields.casoSucesso.getFieldList();
   const caracteristicasAdicionais =
     fields.caracteristicasAdicionais.getFieldList();
 
@@ -748,7 +744,7 @@ export default function EditPeptideo() {
             );
           })}
         </fieldset>
-
+        {/* 
         <fieldset {...getFieldsetProps(fields.casoSucesso)}>
           <legend className="flex w-full items-center gap-4 border-b-2 border-neutral-100 text-xl font-bold text-cyan-600">
             Casos de Sucesso
@@ -789,7 +785,7 @@ export default function EditPeptideo() {
               );
             })}
           </ul>
-        </fieldset>
+        </fieldset> */}
 
         <fieldset {...getFieldsetProps(fields.caracteristicasAdicionais)}>
           <legend className="flex w-full items-center gap-4 border-b-2 border-neutral-100 text-xl font-bold text-cyan-600">

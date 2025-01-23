@@ -2,7 +2,7 @@ import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import { eq } from "drizzle-orm";
 import { auth, lucia } from "~/.server/auth";
 import { db } from "~/.server/db/connection";
-import { userTable } from "~/.server/db/schema";
+import { casoSucessoTable } from "~/.server/db/schema";
 
 export async function action({ params, request }: ActionFunctionArgs) {
   const { session, user } = await auth(request);
@@ -34,21 +34,17 @@ export async function action({ params, request }: ActionFunctionArgs) {
     return { message: "Id inválido", ok: false };
   }
 
-  if (user.id === id) {
-    return { message: "Operação inválida", ok: false };
-  }
-
-  const item = await db.query.userTable.findFirst({
-    where: eq(userTable.id, id),
+  const item = await db.query.casoSucessoTable.findFirst({
+    where: eq(casoSucessoTable.id, Number(id)),
   });
 
   if (!item) {
-    return { message: "Usuário não encontrado", ok: false };
+    return { message: "Item não encontrado", ok: false };
   }
 
-  await db.delete(userTable).where(eq(userTable.id, item.id));
+  await db.delete(casoSucessoTable).where(eq(casoSucessoTable.id, item.id));
 
-  return redirect("/admin/usuarios");
+  return redirect("/admin/casos-de-sucesso");
 }
 
 export async function loader() {

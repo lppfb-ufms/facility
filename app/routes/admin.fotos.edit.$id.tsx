@@ -1,7 +1,6 @@
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
-  json,
   redirect,
 } from "@remix-run/node";
 import {
@@ -63,7 +62,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     .set({ alt: alt?.toString().trim() })
     .where(eq(imageMetadataTable.id, Number(id)));
 
-  return json({ message: "Legenda alterada com sucesso", ok: true });
+  return { message: "Legenda alterada com sucesso", ok: true };
 }
 
 export default function EditFoto() {

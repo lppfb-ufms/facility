@@ -1,4 +1,4 @@
-import { type ActionFunctionArgs, json, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import { eq } from "drizzle-orm";
 import { auth, lucia } from "~/.server/auth";
 import { db } from "~/.server/db/connection";
@@ -31,7 +31,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
 
   const id = params.id;
   if (!id) {
-    return json({ message: "Id inválido", ok: false });
+    return { message: "Id inválido", ok: false };
   }
 
   const item = await db.query.peptideoTable.findFirst({
@@ -39,7 +39,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
   });
 
   if (!item) {
-    return json({ message: "Peptídeo não encontrado", ok: false });
+    return { message: "Peptídeo não encontrado", ok: false };
   }
 
   await db.delete(peptideoTable).where(eq(peptideoTable.id, item.id));

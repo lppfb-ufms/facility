@@ -1,4 +1,3 @@
-import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { eq, sql } from "drizzle-orm";
 import { db } from "~/.server/db/connection";
@@ -48,7 +47,7 @@ export async function loader() {
       peptideoTable.sequencia,
       organismoTable.nomeCientifico,
     );
-  return json(descobertas);
+  return descobertas;
 }
 
 export default function Resultado() {
@@ -56,11 +55,7 @@ export default function Resultado() {
 
   return (
     <Container title="Descobertas do LPPFB">
-      <p className="mt-4 text-sm text-neutral-800">
-        {descobertas.length} registros
-      </p>
-
-      <ul className="mt-4 flex flex-col gap-6 rounded-lg bg-neutral-50 px-4 py-2 text-lg">
+      <ul className="mt-4 flex flex-col gap-6 rounded-lg">
         {descobertas.map(
           ({
             peptideoId,
@@ -71,7 +66,10 @@ export default function Resultado() {
             sequencia,
             funcaoBiologica,
           }) => (
-            <li key={peptideoId} className="flex flex-col gap-1">
+            <li
+              key={peptideoId}
+              className="flex flex-col gap-1 rounded-2xl bg-neutral-50 px-4 py-2"
+            >
               <Link
                 prefetch="intent"
                 to={`/peptideo/${peptideoId}`}
@@ -86,17 +84,17 @@ export default function Resultado() {
                   )
                 ) : null}
               </Link>
-              <p className="text-sm text-neutral-900">
+              <p className="text-neutral-900">
                 <b>Nome popular: </b>
                 {nomesPopulares.filter((nome) => nome !== "NULL").length > 0
                   ? nomesPopulares?.join(", ")
                   : "(sem dados)"}
               </p>
-              <p className="break-words text-sm text-neutral-900">
+              <p className="break-words text-neutral-900">
                 <b>Sequência: </b>
                 {sequencia ?? "(sem dados)"}
               </p>
-              <p className="text-sm text-neutral-900">
+              <p className="text-neutral-900">
                 <b>Funções biológicas: </b>
                 {funcaoBiologica.filter((value) => value !== "NULL").length > 0
                   ? funcaoBiologica?.join(", ")

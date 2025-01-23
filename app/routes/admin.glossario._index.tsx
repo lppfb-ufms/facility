@@ -1,4 +1,3 @@
-import { json } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { TbPencil, TbTextPlus, TbTrash } from "react-icons/tb";
 import { db } from "~/.server/db/connection";
@@ -6,7 +5,7 @@ import { glossarioTable } from "~/.server/db/schema";
 
 export async function loader() {
   const glossarios = await db.select().from(glossarioTable);
-  return json(glossarios);
+  return glossarios;
 }
 
 export default function Glossario() {

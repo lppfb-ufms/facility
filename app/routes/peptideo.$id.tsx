@@ -29,7 +29,12 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
         },
       },
       funcaoBiologica: true,
-      casoSucesso: true,
+      peptideoToCasoSucesso: {
+        columns: {},
+        with: {
+          casoSucesso: true,
+        },
+      },
       caracteristicasAdicionais: true,
       peptideoToPublicacao: {
         columns: {},
@@ -52,7 +57,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 export default function Peptideo() {
   const { peptideoData, user } = useLoaderData<typeof loader>();
   const {
-    casoSucesso,
+    peptideoToCasoSucesso,
     ensaioCelular,
     microbiologia,
     atividadeAntifungica,
@@ -64,6 +69,9 @@ export default function Peptideo() {
     ...peptideo
   } = peptideoData;
   const publicacao = peptideoToPublicacao.map(({ publicacao }) => publicacao);
+  const casoSucesso = peptideoToCasoSucesso.map(
+    ({ casoSucesso }) => casoSucesso,
+  );
   const nomePopular = organismo?.organismoToNomePopular.map(
     ({ nomePopular }) => nomePopular,
   );
@@ -121,13 +129,13 @@ export default function Peptideo() {
             <p>
               <span className="font-bold text-cyan-600">Massa molecular: </span>
               {peptideo.massaMolecular
-                ? `${peptideo.massaMolecular} Da`
+                ? `${Intl.NumberFormat("pt-BR").format(Number(peptideo.massaMolecular))} Da`
                 : "(sem dados)"}
             </p>
             <p>
               <span className="font-bold text-cyan-600">Massa molar: </span>
               {peptideo.massaMolar
-                ? `${peptideo.massaMolar} g/mol`
+                ? `${Intl.NumberFormat("pt-BR").format(Number(peptideo.massaMolar))} g/mol`
                 : "(sem dados)"}
             </p>
             <p>
@@ -172,11 +180,13 @@ export default function Peptideo() {
           </h3>
 
           {casoSucesso.length > 0 ? (
-            casoSucesso.map(({ id, value }) => (
-              <p key={id} className="mt-2 rounded-lg bg-neutral-50 px-4 py-2">
-                {value}
-              </p>
-            ))
+            casoSucesso.map(
+              ({ id, application, manufacturer, peptideProduct }) => (
+                <p key={id} className="mt-2 rounded-lg bg-neutral-50 px-4 py-2">
+                  {application} - {manufacturer} - {peptideProduct}
+                </p>
+              ),
+            )
           ) : (
             <p className="mt-2 rounded-lg bg-neutral-50 px-4 py-2">
               (sem dados)
