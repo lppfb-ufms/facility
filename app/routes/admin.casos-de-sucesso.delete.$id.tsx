@@ -34,7 +34,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
     return { message: "Id inválido", ok: false };
   }
 
-  const item = await db.query.glossarioTable.findFirst({
+  const item = await db.query.casoSucessoTable.findFirst({
     where: eq(casoSucessoTable.id, Number(id)),
   });
 
@@ -44,7 +44,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
 
   await db.delete(casoSucessoTable).where(eq(casoSucessoTable.id, item.id));
 
-  return redirect("/admin/glossario");
+  return redirect("/admin/casos-de-sucesso");
 }
 
 export async function loader() {

@@ -45,11 +45,11 @@ export default function CasosDeSucesso() {
         {casosDeSucesso.map(
           ({ id, application, manufacturer, peptideProduct }) => (
             <li key={id} className="flex flex-col gap-1">
-              <p className="text-2xl font-bold text-cyan-600">{application}</p>
-              <p className="text-xl italic">
-                Fabricante: {manufacturer ?? "(sem dados)"}
+              <p className="text-xl font-bold text-cyan-600">
+                {peptideProduct}
               </p>
-              <p className="text-xl italic">{peptideProduct}</p>
+              <p>Fabricante: {manufacturer ?? "(sem dados)"}</p>
+              <p className="italic">{application}</p>
             </li>
           ),
         )}
