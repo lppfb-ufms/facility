@@ -1,3 +1,0 @@
-foodtech.duckdns.org {
-    reverse_proxy facility:3000
-}

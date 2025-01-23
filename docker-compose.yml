@@ -1,5 +1,5 @@
 services:
-  facility-db:
+  db:
     image: "postgres:17.2-alpine"
     env_file: .env
     environment:
@@ -8,13 +8,15 @@ services:
     volumes:
       - facility_db:/var/lib/postgresql/data
 
-  facility:
+  app:
+    ports:
+      - "80:3000"
     build: .
     env_file: .env
     depends_on:
-      - facility-db
+      - db
     environment:
-      - PGHOST=facility-db
+      - PGHOST=db
       - PGPORT=${PGPORT}
       - PGUSER=${PGUSER}
       - PGPASSWORD=${PGPASSWORD}
@@ -25,19 +27,5 @@ services:
     volumes:
       - ./public/images/upload:/srv/public/images/upload
 
-  caddy:
-    image: caddy:2-alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-    depends_on:
-      - facility
-
 volumes:
   facility_db:
-  caddy_data:
-  caddy_config:
