@@ -7,22 +7,22 @@ export default function Index() {
     <>
       <div className="min-h-[34rem] overflow-x-hidden bg-[url('/images/static/molecula.png')] bg-contain bg-fixed bg-right bg-no-repeat pt-6 lg:pt-0">
         <div className="mx-8 my-16 flex flex-col items-center justify-around lg:flex-row">
-          <div className="lg:min-w-2/5 flex w-full flex-col items-center gap-8">
-            <h1 className="text-balance px-6 text-center text-4xl font-bold text-white lg:w-96 lg:px-0">
+          <div className="flex w-full flex-col items-center gap-8 lg:min-w-2/5">
+            <h1 className="px-6 text-center text-4xl font-bold text-balance text-white lg:w-96 lg:px-0">
               Facility FoodTech do Cerrado-Pantanal
             </h1>
             <SearchBar />
           </div>
-          <div className="mx-4 mb-20 mt-12 flex items-center gap-16">
+          <div className="mx-4 mt-12 mb-20 flex items-center gap-16">
             <img
               src="/images/static/img-01.jpg"
               alt="UFMS - LABORATÓRIO DE PURIFICAÇÃO DE PROTEÍNAS E SUAS FUNÇÕES BIOLÓGICAS"
-              className="h-56 max-w-md translate-x-6 translate-y-16 text-balance border-4 border-neutral-300"
+              className="h-56 max-w-md translate-x-6 translate-y-16 border-4 border-neutral-300 text-balance"
             />
             <img
               src="/images/static/img-02.jpg"
               alt="UFMS - LABORATÓRIO DE PURIFICAÇÃO DE PROTEÍNAS E SUAS FUNÇÕES BIOLÓGICAS"
-              className="h-56 max-w-md -translate-x-2 -translate-y-4 text-balance border-4 border-neutral-300"
+              className="h-56 max-w-md -translate-x-2 -translate-y-4 border-4 border-neutral-300 text-balance"
             />
           </div>
         </div>
