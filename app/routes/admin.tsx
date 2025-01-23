@@ -1,6 +1,8 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { NavLink, Outlet, redirect } from "@remix-run/react";
+import { type ReactNode, memo, useCallback, useMemo } from "react";
 import { IconContext } from "react-icons";
+import { SiMoleculer } from "react-icons/si";
 import {
   TbBook,
   TbDatabasePlus,
@@ -12,8 +14,6 @@ import {
 } from "react-icons/tb";
 import { auth, lucia } from "~/.server/auth";
 import { Container } from "~/components/container";
-import { useMemo, useCallback, memo, type ReactNode } from "react";
-import { SiMoleculer } from "react-icons/si";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { session, user } = await auth(request);
