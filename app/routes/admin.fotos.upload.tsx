@@ -5,7 +5,6 @@ import {
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createFileUploadHandler as createFileUploadHandler,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  json,
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
 import { Form, redirect, useActionData, useNavigate } from "@remix-run/react";
@@ -70,7 +69,7 @@ export async function action({ request }: ActionFunctionArgs) {
     );
     const file = formData.get("image");
     if (!(file instanceof NodeOnDiskFile)) {
-      return json({ message: "Falha ao realizar upload da imagem", ok: false });
+      return { message: "Falha ao realizar upload da imagem", ok: false };
     }
 
     const alt = formData.get("alt");
@@ -80,16 +79,16 @@ export async function action({ request }: ActionFunctionArgs) {
       alt: alt?.toString().trim(),
     });
 
-    return json({ message: "Imagem enviada com sucesso", ok: true });
+    return { message: "Imagem enviada com sucesso", ok: true };
   } catch (error) {
     if (error instanceof MaxPartSizeExceededError) {
-      return json({
+      return {
         message: "Arquivo excedeu o tamanho máximo de 25MB",
         ok: false,
-      });
+      };
     }
     if (error instanceof Error) {
-      return json({ message: error.message, ok: false });
+      return { message: error.message, ok: false };
     }
   }
 }

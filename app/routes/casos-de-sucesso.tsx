@@ -1,5 +1,4 @@
-import { json } from "@remix-run/node";
-import { NavLink, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { db } from "~/.server/db/connection";
 import { Container } from "~/components/container";
 
@@ -7,20 +6,26 @@ export async function loader() {
   const casosDeSucesso = await db.query.casoSucessoTable.findMany({
     columns: {
       id: true,
-      value: true,
-      peptideoId: true,
+      application: true,
+      manufacturer: true,
+      peptideProduct: true,
     },
     with: {
-      peptideo: {
-        columns: {
-          identificador: true,
-          sintetico: true,
-          palavrasChave: true,
-        },
+      peptideoToCasoSucesso: {
+        columns: {},
         with: {
-          organismo: {
+          peptideo: {
             columns: {
-              nomeCientifico: true,
+              id: true,
+              identificador: true,
+              sintetico: true,
+            },
+            with: {
+              organismo: {
+                columns: {
+                  nomeCientifico: true,
+                },
+              },
             },
           },
         },
@@ -28,7 +33,7 @@ export async function loader() {
     },
   });
 
-  return json(casosDeSucesso);
+  return casosDeSucesso;
 }
 
 export default function CasosDeSucesso() {
@@ -37,26 +42,17 @@ export default function CasosDeSucesso() {
   return (
     <Container title="Casos de Sucesso">
       <ul className="mt-4 flex flex-col gap-6 rounded-lg bg-neutral-50 px-4 py-2 text-lg">
-        {casosDeSucesso.map(({ id, peptideoId, value, peptideo }) => (
-          <li key={id} className="flex flex-col gap-1">
-            <NavLink
-              to={`/peptideo/${peptideoId}`}
-              className="text-2xl font-bold text-cyan-600 hover:underline"
-            >
-              {peptideo.identificador
-                ? peptideo.identificador
-                : "(sem identificador)"}
-              {!peptideo.sintetico ? (
-                peptideo.organismo?.nomeCientifico ? (
-                  <i> - {peptideo.organismo.nomeCientifico}</i>
-                ) : (
-                  " - (sem nome científico)"
-                )
-              ) : null}
-            </NavLink>
-            <p className="text-xl italic">{value}</p>
-          </li>
-        ))}
+        {casosDeSucesso.map(
+          ({ id, application, manufacturer, peptideProduct }) => (
+            <li key={id} className="flex flex-col gap-1">
+              <p className="text-2xl font-bold text-cyan-600">{application}</p>
+              <p className="text-xl italic">
+                Fabricante: {manufacturer ?? "(sem dados)"}
+              </p>
+              <p className="text-xl italic">{peptideProduct}</p>
+            </li>
+          ),
+        )}
       </ul>
     </Container>
   );

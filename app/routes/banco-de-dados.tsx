@@ -74,7 +74,7 @@ export default function ListPanel() {
                         .join(", ")
                     : "(sem dados)"}
                 </td>
-                <td className="max-w-3xl break-words px-4 py-4">
+                <td className="max-w-lg break-words px-4 py-4 font-mono">
                   {sequencia ?? "(sem dados)"}
                 </td>
                 <td className="px-4 py-4">

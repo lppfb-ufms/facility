@@ -1,4 +1,4 @@
-import { json, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { db } from "~/.server/db/connection";
 import { imageMetadataTable } from "~/.server/db/schema";
 import { Container } from "~/components/container";
@@ -11,7 +11,7 @@ export async function loader() {
       alt: imageMetadataTable.alt,
     })
     .from(imageMetadataTable);
-  return json(images);
+  return images;
 }
 
 export default function Fotos() {

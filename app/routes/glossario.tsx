@@ -1,4 +1,3 @@
-import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { db } from "~/.server/db/connection";
 import { glossarioTable } from "~/.server/db/schema";
@@ -7,7 +6,7 @@ import { Container } from "~/components/container";
 export async function loader() {
   const glossary = await db.select().from(glossarioTable);
 
-  return json(glossary);
+  return glossary;
 }
 
 export default function Faq() {
@@ -15,7 +14,7 @@ export default function Faq() {
 
   return (
     <Container title="Glossário">
-      <ul className="flex flex-col gap-6">
+      <ul className="grid gap-5 lg:grid-cols-2">
         {glossary.map((item) => (
           <GlossaryListItem key={item.id} item={item} />
         ))}
@@ -30,13 +29,11 @@ function GlossaryListItem({
   item: { name: string; definition: string; example: string };
 }) {
   return (
-    <li>
+    <li className="rounded-2xl bg-neutral-50 p-4">
       <h2 className="text-xl font-bold">{item.name}</h2>
+      <p>{item.definition}</p>
       <p>
-        <strong>Definição</strong>: {item.definition}
-      </p>
-      <p>
-        <strong>Exemplo</strong>: {item.example}
+        <b>ex.:</b> <i>{item.example}</i>
       </p>
     </li>
   );

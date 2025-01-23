@@ -1,11 +1,11 @@
-import { Form, Link, json, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { TbPencil, TbPhotoPlus, TbTrash } from "react-icons/tb";
 import { db } from "~/.server/db/connection";
 import { imageMetadataTable } from "~/.server/db/schema";
 
 export async function loader() {
   const images = await db.select().from(imageMetadataTable);
-  return json(images);
+  return images;
 }
 
 export default function Fotos() {

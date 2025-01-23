@@ -94,7 +94,7 @@ export const peptideoRelations = relations(peptideoTable, ({ one, many }) => ({
     references: [organismoTable.id],
   }),
   funcaoBiologica: many(funcaoBiologicaTable),
-  casoSucesso: many(casoSucessoTable),
+  peptideoToCasoSucesso: many(peptideoToCasoSucessoTable),
   caracteristicasAdicionais: many(caracteristicasAdicionaisTable),
   peptideoToPublicacao: many(peptideoToPublicacaoTable),
 }));
@@ -152,18 +152,37 @@ export const funcaoBiologicaRelations = relations(
 
 export const casoSucessoTable = pgTable("caso_sucesso", {
   id: serial("id").primaryKey(),
-  value: text("value").notNull(),
+  peptideProduct: text("peptide_product"),
+  manufacturer: text("manufacturer"),
+  application: text("application"),
+});
+
+export const casoSucessoRelations = relations(casoSucessoTable, ({ many }) => ({
+  peptideoToCasoSucesso: many(peptideoToCasoSucessoTable),
+}));
+
+export const peptideoToCasoSucessoTable = pgTable("peptideo_to_caso_sucesso", {
   peptideoId: integer("peptideo_id")
     .notNull()
     .references(() => peptideoTable.id, { onDelete: "cascade" }),
+  casoSucessoId: integer("caso_sucesso_id")
+    .notNull()
+    .references(() => casoSucessoTable.id, { onDelete: "cascade" }),
 });
 
-export const casoSucessoRelations = relations(casoSucessoTable, ({ one }) => ({
-  peptideo: one(peptideoTable, {
-    fields: [casoSucessoTable.peptideoId],
-    references: [peptideoTable.id],
+export const peptideoToCasoSucessoRelations = relations(
+  peptideoToCasoSucessoTable,
+  ({ one }) => ({
+    peptideo: one(peptideoTable, {
+      fields: [peptideoToCasoSucessoTable.peptideoId],
+      references: [peptideoTable.id],
+    }),
+    casoSucesso: one(casoSucessoTable, {
+      fields: [peptideoToCasoSucessoTable.casoSucessoId],
+      references: [casoSucessoTable.id],
+    }),
   }),
-}));
+);
 
 export const caracteristicasAdicionaisTable = pgTable(
   "caracteristicas_adicionais",

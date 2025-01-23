@@ -1,10 +1,9 @@
-import { type LoaderFunctionArgs, json } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { NavLink, useLoaderData, useNavigate } from "@remix-run/react";
 import { type SQL, eq, ilike, or, sql } from "drizzle-orm";
 import { TbFlaskFilled } from "react-icons/tb";
 import { db } from "~/.server/db/connection";
 import {
-  casoSucessoTable,
   funcaoBiologicaTable,
   nomePopularTable,
   organismoTable,
@@ -20,7 +19,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const nomeCientifico = searchParams.get("nomeCientifico");
   const origem = searchParams.get("origem");
   const familia = searchParams.get("familia");
-  const casoSucesso = searchParams.get("casoSucesso");
 
   // ilike = case-insensitive like
   // postgres only
@@ -35,7 +33,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
       ilike(organismoTable.nomeCientifico, `%${nomeCientifico}%`),
     !!origem && ilike(organismoTable.origem, `%${origem}%`),
     !!familia && ilike(organismoTable.familia, `%${familia}%`),
-    !!casoSucesso && ilike(casoSucessoTable.value, `%${casoSucesso}%`),
   ].filter((like): like is SQL<unknown> => like !== false);
 
   const results = await db
@@ -55,10 +52,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
       >`array_agg(distinct ${funcaoBiologicaTable.value})`,
     })
     .from(peptideoTable)
-    .leftJoin(
-      casoSucessoTable,
-      eq(peptideoTable.id, casoSucessoTable.peptideoId),
-    )
     .leftJoin(organismoTable, eq(peptideoTable.organismoId, organismoTable.id))
     .leftJoin(
       organismoToNomePopularTable,
@@ -80,7 +73,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       organismoTable.nomeCientifico,
     );
 
-  return json(results);
+  return results;
 }
 
 export default function Resultado() {
@@ -97,12 +90,12 @@ export default function Resultado() {
         >
           Voltar
         </button>
-        <p className="text-sm text-neutral-800">
+        <p className="mx-2 text-sm text-neutral-800">
           {data.length} resultados encontrados
         </p>
       </div>
 
-      <ul className="mt-4 flex flex-col gap-6 rounded-lg bg-neutral-50 px-4 py-2 text-lg">
+      <ul className="mt-4 flex flex-col gap-6 rounded-lg">
         {data.map(
           ({
             peptideoId,
@@ -115,7 +108,10 @@ export default function Resultado() {
             descobertaLPPFB,
             funcaoBiologica,
           }) => (
-            <li key={peptideoId} className="flex flex-col gap-1">
+            <li
+              key={peptideoId}
+              className="flex flex-col gap-1 rounded-2xl bg-neutral-50 p-4"
+            >
               <NavLink
                 to={`/peptideo/${peptideoId}`}
                 className="text-2xl font-bold text-cyan-600 hover:underline"
@@ -134,22 +130,22 @@ export default function Resultado() {
                   <TbFlaskFilled /> Descoberta do LPPFB
                 </div>
               ) : (
-                <p className="text-sm text-neutral-900">
+                <p className="text-neutral-900">
                   <span className="font-bold">Banco de dados: </span>
                   {bancoDados ?? "(sem dados)"}
                 </p>
               )}
-              <p className="text-sm text-neutral-900">
+              <p className="text-neutral-900">
                 <span className="font-bold">Nome popular: </span>
                 {nomesPopulares.filter((nome) => nome !== "NULL").length > 0
                   ? nomesPopulares?.join(", ")
                   : "(sem dados)"}
               </p>
-              <p className="text-sm text-neutral-900">
+              <p className="text-neutral-900">
                 <span className="font-bold">Palavras-chave: </span>
                 {palavrasChave ?? "(sem dados)"}
               </p>
-              <p className="text-sm text-neutral-900">
+              <p className="text-neutral-900">
                 <span className="font-bold">Funções biológicas: </span>
                 {funcaoBiologica.filter((value) => value !== "NULL").length > 0
                   ? funcaoBiologica?.join(", ")

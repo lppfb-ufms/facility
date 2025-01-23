@@ -1,0 +1,870 @@
+{
+  "id": "24b01122-7d95-4d7e-92e8-414a58b07513",
+  "prevId": "b54cf607-09c1-46d4-9347-b6cb0f7068ef",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.caracteristicas_adicionais": {
+      "name": "caracteristicas_adicionais",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "peptideo_id": {
+          "name": "peptideo_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "caracteristicas_adicionais_peptideo_id_peptideo_id_fk": {
+          "name": "caracteristicas_adicionais_peptideo_id_peptideo_id_fk",
+          "tableFrom": "caracteristicas_adicionais",
+          "tableTo": "peptideo",
+          "columnsFrom": [
+            "peptideo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.caso_sucesso": {
+      "name": "caso_sucesso",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "peptide_product": {
+          "name": "peptide_product",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "manufacturer": {
+          "name": "manufacturer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "application": {
+          "name": "application",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.email_verification_code": {
+      "name": "email_verification_code",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now() + interval '15 minutes'"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "email_verification_code_user_id_user_id_fk": {
+          "name": "email_verification_code_user_id_user_id_fk",
+          "tableFrom": "email_verification_code",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.funcao_biologica": {
+      "name": "funcao_biologica",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "peptideo_id": {
+          "name": "peptideo_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "funcao_biologica_peptideo_id_peptideo_id_fk": {
+          "name": "funcao_biologica_peptideo_id_peptideo_id_fk",
+          "tableFrom": "funcao_biologica",
+          "tableTo": "peptideo",
+          "columnsFrom": [
+            "peptideo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.glossario": {
+      "name": "glossario",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "definition": {
+          "name": "definition",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "example": {
+          "name": "example",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "glossario_name_unique": {
+          "name": "glossario_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.image_metadata": {
+      "name": "image_metadata",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "file_name": {
+          "name": "file_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "alt": {
+          "name": "alt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uploaded_at": {
+          "name": "uploaded_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "image_metadata_file_name_unique": {
+          "name": "image_metadata_file_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "file_name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.nome_popular": {
+      "name": "nome_popular",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "nome_idx": {
+          "name": "nome_idx",
+          "columns": [
+            {
+              "expression": "nome",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "nome_popular_nome_unique": {
+          "name": "nome_popular_nome_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "nome"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.organismo": {
+      "name": "organismo",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nome_cientifico": {
+          "name": "nome_cientifico",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "familia": {
+          "name": "familia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "origem": {
+          "name": "origem",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "nome_cientifico_idx": {
+          "name": "nome_cientifico_idx",
+          "columns": [
+            {
+              "expression": "nome_cientifico",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "organismo_nome_cientifico_unique": {
+          "name": "organismo_nome_cientifico_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "nome_cientifico"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.organismo_to_nome_popular": {
+      "name": "organismo_to_nome_popular",
+      "schema": "",
+      "columns": {
+        "organismo_id": {
+          "name": "organismo_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome_popular_id": {
+          "name": "nome_popular_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "organismo_to_nome_popular_organismo_id_organismo_id_fk": {
+          "name": "organismo_to_nome_popular_organismo_id_organismo_id_fk",
+          "tableFrom": "organismo_to_nome_popular",
+          "tableTo": "organismo",
+          "columnsFrom": [
+            "organismo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "organismo_to_nome_popular_nome_popular_id_nome_popular_id_fk": {
+          "name": "organismo_to_nome_popular_nome_popular_id_nome_popular_id_fk",
+          "tableFrom": "organismo_to_nome_popular",
+          "tableTo": "nome_popular",
+          "columnsFrom": [
+            "nome_popular_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.password_reset_token": {
+      "name": "password_reset_token",
+      "schema": "",
+      "columns": {
+        "token_hash": {
+          "name": "token_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now() + interval '30 minutes'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "password_reset_token_user_id_user_id_fk": {
+          "name": "password_reset_token_user_id_user_id_fk",
+          "tableFrom": "password_reset_token",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "password_reset_token_token_hash_unique": {
+          "name": "password_reset_token_token_hash_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "token_hash"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.peptideo": {
+      "name": "peptideo",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "identificador": {
+          "name": "identificador",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sequencia": {
+          "name": "sequencia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sintetico": {
+          "name": "sintetico",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "descoberta_lppfb": {
+          "name": "descoberta_lppfb",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "banco_dados": {
+          "name": "banco_dados",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "palavras_chave": {
+          "name": "palavras_chave",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "quantidade_aminoacidos": {
+          "name": "quantidade_aminoacidos",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "massa_molecular": {
+          "name": "massa_molecular",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "massa_molar": {
+          "name": "massa_molar",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ensaio_celular": {
+          "name": "ensaio_celular",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "microbiologia": {
+          "name": "microbiologia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "atividade_antifungica": {
+          "name": "atividade_antifungica",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "propriedades_fisico_quimicas": {
+          "name": "propriedades_fisico_quimicas",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "organismo_id": {
+          "name": "organismo_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.peptideo_to_caso_sucesso": {
+      "name": "peptideo_to_caso_sucesso",
+      "schema": "",
+      "columns": {
+        "peptideo_id": {
+          "name": "peptideo_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "caso_sucesso_id": {
+          "name": "caso_sucesso_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "peptideo_to_caso_sucesso_peptideo_id_peptideo_id_fk": {
+          "name": "peptideo_to_caso_sucesso_peptideo_id_peptideo_id_fk",
+          "tableFrom": "peptideo_to_caso_sucesso",
+          "tableTo": "peptideo",
+          "columnsFrom": [
+            "peptideo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "peptideo_to_caso_sucesso_caso_sucesso_id_caso_sucesso_id_fk": {
+          "name": "peptideo_to_caso_sucesso_caso_sucesso_id_caso_sucesso_id_fk",
+          "tableFrom": "peptideo_to_caso_sucesso",
+          "tableTo": "caso_sucesso",
+          "columnsFrom": [
+            "caso_sucesso_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.peptideo_to_publicacao": {
+      "name": "peptideo_to_publicacao",
+      "schema": "",
+      "columns": {
+        "peptideo_id": {
+          "name": "peptideo_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "publicacao_id": {
+          "name": "publicacao_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "peptideo_to_publicacao_peptideo_id_peptideo_id_fk": {
+          "name": "peptideo_to_publicacao_peptideo_id_peptideo_id_fk",
+          "tableFrom": "peptideo_to_publicacao",
+          "tableTo": "peptideo",
+          "columnsFrom": [
+            "peptideo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "peptideo_to_publicacao_publicacao_id_publicacao_id_fk": {
+          "name": "peptideo_to_publicacao_publicacao_id_publicacao_id_fk",
+          "tableFrom": "peptideo_to_publicacao",
+          "tableTo": "publicacao",
+          "columnsFrom": [
+            "publicacao_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.publicacao": {
+      "name": "publicacao",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "doi": {
+          "name": "doi",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "titulo": {
+          "name": "titulo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "publicacao_doi_unique": {
+          "name": "publicacao_doi_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "doi"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.session": {
+      "name": "session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
+          "tableFrom": "session",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "is_admin": {
+          "name": "is_admin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_email_unique": {
+          "name": "user_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
