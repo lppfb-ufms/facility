@@ -33,7 +33,7 @@ export default function Fotos() {
               />
             </div>
             {!!alt && (
-              <figcaption className="bg-neutral-400 bg-opacity-5 p-4 text-center italic text-neutral-800">
+              <figcaption className="bg-opacity-5 bg-neutral-400 p-4 text-center text-neutral-800 italic">
                 {alt}
               </figcaption>
             )}

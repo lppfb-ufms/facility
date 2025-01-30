@@ -22,7 +22,7 @@ export default function Fotos() {
         <NavLink
           prefetch="intent"
           to="upload"
-          className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pl-5 pr-4 text-lg font-bold text-white"
+          className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pr-4 pl-5 text-lg font-bold text-white"
         >
           Adicionar foto <TbPhotoPlus size="2rem" />
         </NavLink>
