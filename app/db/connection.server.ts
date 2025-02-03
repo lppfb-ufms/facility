@@ -13,8 +13,14 @@ const db = drizzle({
   schema,
 });
 
-migrate(db, { migrationsFolder: "./migrations" });
-
-await db.execute(sql`CREATE EXTENSION IF NOT EXISTS unaccent;`);
+// use drizzle-kit push during development
+if (process.env.NODE_ENV === "production") {
+  Promise.all([
+    migrate(db, { migrationsFolder: "./migrations" }),
+    db.execute(sql`CREATE EXTENSION IF NOT EXISTS unaccent;`),
+  ]).then(() => {
+    console.log("db ready");
+  });
+}
 
 export { db };
