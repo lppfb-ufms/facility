@@ -1,12 +1,12 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import { type ActionFunctionArgs, redirect } from "@remix-run/node";
-import { Form, Link, useActionData } from "@remix-run/react";
+import { type ActionFunctionArgs, redirect } from "react-router";
+import { Form, Link, useActionData } from "react-router";
 import { parseWithValibot } from "conform-to-valibot";
 import { eq } from "drizzle-orm";
 import { email, object, pipe, string } from "valibot";
 import { lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { userTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { userTable } from "~/db/schema";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
 
@@ -34,16 +34,9 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
-  const { verify } = await import("@node-rs/argon2");
-  const validPassword = await verify(
+  const validPassword = await Bun.password.verify(
     user.passwordHash,
     submission.value.password,
-    {
-      memoryCost: 19456,
-      timeCost: 2,
-      outputLen: 32,
-      parallelism: 1,
-    },
   );
   if (!validPassword) {
     return submission.reply({

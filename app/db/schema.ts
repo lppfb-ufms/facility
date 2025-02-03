@@ -13,16 +13,12 @@ import {
 export const organismoTable = pgTable(
   "organismo",
   {
-    id: serial("id").primaryKey(),
-    nomeCientifico: text("nome_cientifico").unique(),
-    familia: text("familia"),
-    origem: text("origem"),
+    id: serial().primaryKey(),
+    nomeCientifico: text().unique(),
+    familia: text(),
+    origem: text(),
   },
-  (table) => ({
-    nomeCientificoIdx: uniqueIndex("nome_cientifico_idx").on(
-      table.nomeCientifico,
-    ),
-  }),
+  (table) => [uniqueIndex().on(table.nomeCientifico)],
 );
 
 export const organismoRelations = relations(organismoTable, ({ many }) => ({
@@ -32,12 +28,10 @@ export const organismoRelations = relations(organismoTable, ({ many }) => ({
 export const nomePopularTable = pgTable(
   "nome_popular",
   {
-    id: serial("id").primaryKey(),
-    nome: text("nome").notNull().unique(),
+    id: serial().primaryKey(),
+    nome: text().notNull().unique(),
   },
-  (table) => ({
-    nomeIdx: uniqueIndex("nome_idx").on(table.nome),
-  }),
+  (table) => [uniqueIndex().on(table.nome)],
 );
 
 export const nomePopularRelations = relations(nomePopularTable, ({ many }) => ({
@@ -47,10 +41,10 @@ export const nomePopularRelations = relations(nomePopularTable, ({ many }) => ({
 export const organismoToNomePopularTable = pgTable(
   "organismo_to_nome_popular",
   {
-    organismoId: integer("organismo_id")
+    organismoId: integer()
       .notNull()
       .references(() => organismoTable.id, { onDelete: "cascade" }),
-    nomePopularId: integer("nome_popular_id")
+    nomePopularId: integer()
       .notNull()
       .references(() => nomePopularTable.id, { onDelete: "cascade" }),
   },
@@ -71,21 +65,21 @@ export const organismoToNomePopularRelations = relations(
 );
 
 export const peptideoTable = pgTable("peptideo", {
-  id: serial("id").primaryKey(),
-  identificador: text("identificador"),
-  sequencia: text("sequencia").notNull(),
-  sintetico: boolean("sintetico").notNull().default(false),
-  descobertaLPPFB: boolean("descoberta_lppfb").notNull().default(false),
-  bancoDados: text("banco_dados"),
-  palavrasChave: text("palavras_chave"),
-  quantidadeAminoacidos: integer("quantidade_aminoacidos"),
-  massaMolecular: numeric("massa_molecular"),
-  massaMolar: numeric("massa_molar"),
-  ensaioCelular: text("ensaio_celular"),
-  microbiologia: text("microbiologia"),
-  atividadeAntifungica: text("atividade_antifungica"),
-  propriedadesFisicoQuimicas: text("propriedades_fisico_quimicas"),
-  organismoId: integer("organismo_id"),
+  id: serial().primaryKey(),
+  identificador: text(),
+  sequencia: text().notNull(),
+  sintetico: boolean().notNull().default(false),
+  descobertaLPPFB: boolean().notNull().default(false),
+  bancoDados: text(),
+  palavrasChave: text(),
+  quantidadeAminoacidos: integer(),
+  massaMolecular: numeric(),
+  massaMolar: numeric(),
+  ensaioCelular: text(),
+  microbiologia: text(),
+  atividadeAntifungica: text(),
+  propriedadesFisicoQuimicas: text(),
+  organismoId: integer(),
 });
 
 export const peptideoRelations = relations(peptideoTable, ({ one, many }) => ({
@@ -100,9 +94,9 @@ export const peptideoRelations = relations(peptideoTable, ({ one, many }) => ({
 }));
 
 export const publicacaoTable = pgTable("publicacao", {
-  id: serial("id").primaryKey(),
-  doi: text("doi").unique(),
-  titulo: text("titulo"),
+  id: serial().primaryKey(),
+  doi: text().unique(),
+  titulo: text(),
 });
 
 export const publicacaoRelations = relations(publicacaoTable, ({ many }) => ({
@@ -110,10 +104,10 @@ export const publicacaoRelations = relations(publicacaoTable, ({ many }) => ({
 }));
 
 export const peptideoToPublicacaoTable = pgTable("peptideo_to_publicacao", {
-  peptideoId: integer("peptideo_id")
+  peptideoId: integer()
     .notNull()
     .references(() => peptideoTable.id, { onDelete: "cascade" }),
-  publicacaoId: integer("publicacao_id")
+  publicacaoId: integer()
     .notNull()
     .references(() => publicacaoTable.id, { onDelete: "cascade" }),
 });
@@ -133,9 +127,9 @@ export const peptideoToPublicacaoRelations = relations(
 );
 
 export const funcaoBiologicaTable = pgTable("funcao_biologica", {
-  id: serial("id").primaryKey(),
-  value: text("value").notNull(),
-  peptideoId: integer("peptideo_id")
+  id: serial().primaryKey(),
+  value: text().notNull(),
+  peptideoId: integer()
     .notNull()
     .references(() => peptideoTable.id, { onDelete: "cascade" }),
 });
@@ -151,10 +145,10 @@ export const funcaoBiologicaRelations = relations(
 );
 
 export const casoSucessoTable = pgTable("caso_sucesso", {
-  id: serial("id").primaryKey(),
-  peptideProduct: text("peptide_product"),
-  manufacturer: text("manufacturer"),
-  application: text("application"),
+  id: serial().primaryKey(),
+  peptideProduct: text(),
+  manufacturer: text(),
+  application: text(),
 });
 
 export const casoSucessoRelations = relations(casoSucessoTable, ({ many }) => ({
@@ -162,10 +156,10 @@ export const casoSucessoRelations = relations(casoSucessoTable, ({ many }) => ({
 }));
 
 export const peptideoToCasoSucessoTable = pgTable("peptideo_to_caso_sucesso", {
-  peptideoId: integer("peptideo_id")
+  peptideoId: integer()
     .notNull()
     .references(() => peptideoTable.id, { onDelete: "cascade" }),
-  casoSucessoId: integer("caso_sucesso_id")
+  casoSucessoId: integer()
     .notNull()
     .references(() => casoSucessoTable.id, { onDelete: "cascade" }),
 });
@@ -187,9 +181,9 @@ export const peptideoToCasoSucessoRelations = relations(
 export const caracteristicasAdicionaisTable = pgTable(
   "caracteristicas_adicionais",
   {
-    id: serial("id").primaryKey(),
-    value: text("value").notNull(),
-    peptideoId: integer("peptideo_id")
+    id: serial().primaryKey(),
+    value: text().notNull(),
+    peptideoId: integer()
       .notNull()
       .references(() => peptideoTable.id, { onDelete: "cascade" }),
   },
@@ -206,60 +200,60 @@ export const caracteristicasAdicionaisRelations = relations(
 );
 
 export const userTable = pgTable("user", {
-  id: text("id").primaryKey(),
-  displayName: text("display_name").notNull(),
-  email: text("email").notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  emailVerified: boolean("email_verified").notNull().default(false),
-  isAdmin: boolean("is_admin").notNull().default(false),
+  id: text().primaryKey(),
+  displayName: text().notNull(),
+  email: text().notNull().unique(),
+  passwordHash: text().notNull(),
+  createdAt: timestamp().notNull().defaultNow(),
+  emailVerified: boolean().notNull().default(false),
+  isAdmin: boolean().notNull().default(false),
 });
 
 export type User = typeof userTable.$inferSelect;
 
 export const emailVerificationCodeTable = pgTable("email_verification_code", {
-  id: serial("id").primaryKey(),
-  code: text("code").notNull(),
-  email: text("email").notNull(),
-  expiresAt: timestamp("expires_at", { withTimezone: true, mode: "date" })
+  id: serial().primaryKey(),
+  code: text().notNull(),
+  email: text().notNull(),
+  expiresAt: timestamp({ withTimezone: true, mode: "date" })
     .notNull()
     .default(sql`now() + interval '15 minutes'`),
-  userId: text("user_id")
+  userId: text()
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
 });
 
 export const sessionTable = pgTable("session", {
-  id: text("id").primaryKey(),
-  userId: text("user_id")
+  id: text().primaryKey(),
+  userId: text()
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
-  expiresAt: timestamp("expires_at", {
+  expiresAt: timestamp({
     withTimezone: true,
     mode: "date",
   }).notNull(),
 });
 
 export const passwordResetTokenTable = pgTable("password_reset_token", {
-  tokenHash: text("token_hash").notNull().unique(),
-  userId: text("user_id")
+  tokenHash: text().notNull().unique(),
+  userId: text()
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
-  expiresAt: timestamp("expires_at", { withTimezone: true, mode: "date" })
+  expiresAt: timestamp({ withTimezone: true, mode: "date" })
     .notNull()
     .default(sql`now() + interval '30 minutes'`),
 });
 
 export const imageMetadataTable = pgTable("image_metadata", {
-  id: serial("id").primaryKey(),
-  fileName: text("file_name").notNull().unique(),
-  alt: text("alt"),
-  uploadedAt: timestamp("uploaded_at").notNull().defaultNow(),
+  id: serial().primaryKey(),
+  fileName: text().notNull().unique(),
+  alt: text(),
+  uploadedAt: timestamp().notNull().defaultNow(),
 });
 
 export const glossarioTable = pgTable("glossario", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull().unique(),
-  definition: text("definition").notNull(),
-  example: text("example").notNull(),
+  id: serial().primaryKey(),
+  name: text().notNull().unique(),
+  definition: text().notNull(),
+  example: text().notNull(),
 });

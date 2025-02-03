@@ -1,7 +1,7 @@
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "react-router";
 import { TbPencil, TbPhotoPlus, TbTrash } from "react-icons/tb";
-import { db } from "~/.server/db/connection";
-import { imageMetadataTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { imageMetadataTable } from "~/db/schema";
 
 export async function loader() {
   const images = await db.select().from(imageMetadataTable);

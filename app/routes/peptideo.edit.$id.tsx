@@ -9,20 +9,14 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   redirect,
-} from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
+} from "react-router";
+import { Form, useActionData, useLoaderData, useNavigate } from "react-router";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { and, eq, inArray } from "drizzle-orm";
 import { TbPlus, TbTrash } from "react-icons/tb";
 import {
   array,
   boolean,
-  fallback,
   integer,
   number,
   object,
@@ -33,7 +27,7 @@ import {
   transform,
 } from "valibot";
 import { auth, lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
+import { db } from "~/db/connection.server";
 import {
   caracteristicasAdicionaisTable,
   funcaoBiologicaTable,
@@ -43,7 +37,7 @@ import {
   peptideoTable,
   peptideoToPublicacaoTable,
   publicacaoTable,
-} from "~/.server/db/schema";
+} from "~/db/schema";
 import { Container } from "~/components/container";
 import {
   CheckboxInput,
@@ -135,8 +129,8 @@ const schema = object({
   id: pipe(number(), integer()),
   identificador: optional(string()),
   sequencia: string(),
-  sintetico: fallback(boolean(), false),
-  descobertaLPPFB: fallback(boolean(), false),
+  sintetico: optional(boolean(), false),
+  descobertaLPPFB: optional(boolean(), false),
   quantidadeAminoacidos: pipe(
     string(),
     transform((qtd) => Number(qtd.replace(",", "."))),
@@ -474,6 +468,9 @@ export default function EditPeptideo() {
     lastResult,
     constraint: getValibotConstraint(schema),
     onValidate({ formData }) {
+      const obj = Object.fromEntries(formData);
+      console.log(obj);
+
       return parseWithValibot(formData, { schema });
     },
   });
@@ -574,14 +571,10 @@ export default function EditPeptideo() {
           <legend className="mb-3 w-full border-b-2 border-neutral-100 text-xl font-bold text-cyan-600">
             Dados do Organismo
           </legend>
-          <input
-            {...getInputProps(organismo.id, { type: "hidden" })}
-            key={undefined}
-          />
+          <input {...getInputProps(organismo.id, { type: "hidden" })} />
           <CheckboxInput
             label="Sintético"
             {...getInputProps(fields.sintetico, { type: "checkbox" })}
-            key={undefined}
           />
           <FormErrorMessage errors={fields.sintetico.errors} />
           <TextInput

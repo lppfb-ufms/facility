@@ -1,9 +1,9 @@
 import { rm } from "node:fs";
-import { type ActionFunctionArgs, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, redirect } from "react-router";
 import { eq } from "drizzle-orm";
 import { auth, lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { imageMetadataTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { imageMetadataTable } from "~/db/schema";
 
 export async function action({ params, request }: ActionFunctionArgs) {
   const { session, user } = await auth(request);

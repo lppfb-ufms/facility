@@ -1,6 +1,6 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form, redirect, useActionData } from "@remix-run/react";
+import type { ActionFunctionArgs } from "react-router";
+import { Form, redirect, useActionData } from "react-router";
 import { parseWithValibot } from "conform-to-valibot";
 import { count, eq, gte } from "drizzle-orm";
 import { generateIdFromEntropySize } from "lucia";
@@ -15,8 +15,8 @@ import {
   string,
 } from "valibot";
 import { generateEmailVerificationCode, lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { userTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { userTable } from "~/db/schema";
 import { transporter } from "~/.server/email";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
@@ -62,12 +62,10 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
-  const { hash } = await import("@node-rs/argon2");
-  const passwordHash = await hash(password, {
+  const passwordHash = await Bun.password.hash(password, {
     memoryCost: 19456,
     timeCost: 2,
-    outputLen: 32,
-    parallelism: 1,
+    algorithm: "argon2id",
   });
 
   const userId = generateIdFromEntropySize(10);

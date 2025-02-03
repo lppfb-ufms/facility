@@ -1,8 +1,8 @@
-import { Form, Link, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "react-router";
 import type { FormEvent } from "react";
 import { TbPencil, TbTextPlus, TbTrash } from "react-icons/tb";
-import { db } from "~/.server/db/connection";
-import { casoSucessoTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { casoSucessoTable } from "~/db/schema";
 
 export async function loader() {
   const casosDeSucesso = await db.select().from(casoSucessoTable);

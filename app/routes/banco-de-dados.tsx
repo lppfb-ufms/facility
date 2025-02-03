@@ -1,5 +1,5 @@
-import { Link, useLoaderData } from "@remix-run/react";
-import { db } from "~/.server/db/connection";
+import { Link, useLoaderData } from "react-router";
+import { db } from "~/db/connection.server";
 import { Container } from "~/components/container";
 
 export async function loader() {

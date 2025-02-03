@@ -1,12 +1,12 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, redirect, useActionData } from "@remix-run/react";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { Form, redirect, useActionData } from "react-router";
 import { parseWithValibot } from "conform-to-valibot";
 import { eq } from "drizzle-orm";
 import { email, object, pipe, string } from "valibot";
 import { auth, createPasswordResetToken } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { passwordResetTokenTable, userTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { passwordResetTokenTable, userTable } from "~/db/schema";
 import { transporter } from "~/.server/email";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";

@@ -1,13 +1,13 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "react-router";
 import { eq, sql } from "drizzle-orm";
-import { db } from "~/.server/db/connection";
+import { db } from "~/db/connection.server";
 import {
   funcaoBiologicaTable,
   nomePopularTable,
   organismoTable,
   organismoToNomePopularTable,
   peptideoTable,
-} from "~/.server/db/schema";
+} from "~/db/schema";
 import { Container } from "~/components/container";
 
 export async function loader() {

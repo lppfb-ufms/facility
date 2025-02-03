@@ -1,6 +1,6 @@
-import { useLoaderData } from "@remix-run/react";
-import { db } from "~/.server/db/connection";
-import { imageMetadataTable } from "~/.server/db/schema";
+import { useLoaderData } from "react-router";
+import { db } from "~/db/connection.server";
+import { imageMetadataTable } from "~/db/schema";
 import { Container } from "~/components/container";
 
 export async function loader() {

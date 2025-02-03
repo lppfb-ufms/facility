@@ -1,10 +1,10 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, redirect, useFetcher, useLoaderData } from "@remix-run/react";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { Form, redirect, useFetcher, useLoaderData } from "react-router";
 import { eq } from "drizzle-orm";
 import { TbShieldMinus, TbShieldPlus, TbTrash } from "react-icons/tb";
 import { auth } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { userTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { userTable } from "~/db/schema";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { user } = await auth(request);

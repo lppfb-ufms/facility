@@ -1,5 +1,5 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { NavLink, Outlet, redirect } from "@remix-run/react";
+import type { LoaderFunctionArgs } from "react-router";
+import { NavLink, Outlet, redirect } from "react-router";
 import { type ReactNode, memo, useCallback, useMemo } from "react";
 import { IconContext } from "react-icons";
 import { SiMoleculer } from "react-icons/si";

@@ -8,13 +8,13 @@ import {
   useLoaderData,
   useNavigate,
   useRouteError,
-} from "@remix-run/react";
+} from "react-router";
 import "./tailwind.css";
 import type {
   LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
-} from "@remix-run/node";
+} from "react-router";
 import type { ReactNode } from "react";
 import { auth } from "~/.server/auth";
 import { Container } from "~/components/container";
@@ -28,13 +28,15 @@ export const links: LinksFunction = () => {
       type: "image/png",
       sizes: "64x64",
     },
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
     {
       rel: "preconnect",
-      href: "https://rsms.me/",
+      href: "https://fonts.gstatic.com",
+      crossOrigin: "anonymous",
     },
     {
       rel: "stylesheet",
-      href: "https://rsms.me/inter/inter.css",
+      href: "https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap",
     },
   ];
 };
@@ -64,7 +66,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="overflow-y-scroll bg-gradient-to-l from-cyan-700 to-cyan-600">
+      <body>
         {children}
         <ScrollRestoration />
         <Scripts />

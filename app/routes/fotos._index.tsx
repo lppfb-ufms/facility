@@ -1,7 +1,7 @@
-import { NavLink, useLoaderData } from "@remix-run/react";
+import { NavLink, useLoaderData } from "react-router";
 import { TbPhotoPlus } from "react-icons/tb";
-import { db } from "~/.server/db/connection";
-import { imageMetadataTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { imageMetadataTable } from "~/db/schema";
 
 export async function loader() {
   const images = await db

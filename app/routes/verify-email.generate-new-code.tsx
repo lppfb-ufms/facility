@@ -1,8 +1,8 @@
-import { type ActionFunctionArgs, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, redirect } from "react-router";
 import { eq } from "drizzle-orm";
 import { auth, generateEmailVerificationCode, lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { emailVerificationCodeTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { emailVerificationCodeTable } from "~/db/schema";
 import { transporter } from "~/.server/email";
 
 export async function action({ request }: ActionFunctionArgs) {

@@ -1,6 +1,6 @@
 import { desc, getTableColumns, sql } from "drizzle-orm";
-import { db } from "~/.server/db/connection";
-import { nomePopularTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { nomePopularTable } from "~/db/schema";
 
 const search = "feijao";
 

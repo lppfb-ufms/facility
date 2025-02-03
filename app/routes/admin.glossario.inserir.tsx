@@ -1,11 +1,11 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form, redirect, useActionData, useNavigate } from "@remix-run/react";
+import type { ActionFunctionArgs } from "react-router";
+import { Form, redirect, useActionData, useNavigate } from "react-router";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { object, string } from "valibot";
 import { auth, lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { glossarioTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { glossarioTable } from "~/db/schema";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
 
 const schema = object({
