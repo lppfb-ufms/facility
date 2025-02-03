@@ -1,6 +1,7 @@
 import { isbot } from "isbot";
 // @ts-expect-error
 import { renderToReadableStream } from "react-dom/server.browser";
+import type { ReactDOMServerReadableStream } from "react-dom/server";
 import type { AppLoadContext, EntryContext } from "react-router";
 import { ServerRouter } from "react-router";
 
@@ -13,7 +14,7 @@ export default async function handleRequest(
 ) {
   let userAgent = request.headers.get("user-agent");
 
-  let stream = await renderToReadableStream(
+  let stream: ReactDOMServerReadableStream = await renderToReadableStream(
     <ServerRouter context={routerContext} url={request.url} />,
     {
       signal: request.signal,
