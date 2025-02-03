@@ -7,7 +7,11 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set");
 }
 
-const db = drizzle(process.env.DATABASE_URL, { casing: "snake_case", schema });
+const db = drizzle({
+  connection: { url: process.env.DATABASE_URL, prepare: false },
+  casing: "snake_case",
+  schema,
+});
 
 migrate(db, { migrationsFolder: "./migrations" });
 

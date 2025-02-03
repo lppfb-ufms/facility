@@ -5,22 +5,17 @@ import {
   Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
-  useLoaderData,
   useNavigate,
   useRouteError,
 } from "react-router";
 import "./tailwind.css";
 import type { ReactNode } from "react";
-import type {
-  LinksFunction,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "react-router";
 import { auth } from "~/.server/auth";
 import { Container } from "~/components/container";
 import { Header } from "~/components/header";
+import type { Route } from "./+types/root";
 
-export const links: LinksFunction = () => {
+export const links: Route.LinksFunction = () => {
   return [
     {
       rel: "icon",
@@ -41,7 +36,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = () => {
+export const meta: Route.MetaFunction = () => {
   return [
     { title: "Facility FoodTech do Cerrado-Pantanal" },
     {
@@ -75,12 +70,12 @@ export function Layout({ children }: { children: ReactNode }) {
   );
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   return await auth(request);
 }
 
-export default function App() {
-  const { user } = useLoaderData<typeof loader>();
+export default function App({ loaderData }: Route.ComponentProps) {
+  const { user } = loaderData;
 
   return (
     <>
