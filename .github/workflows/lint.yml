@@ -26,25 +26,19 @@ jobs:
         run: bun install --frozen-lockfile
       - name: run biome
         run: bunx biome check --write --unsafe .
-      - name: diff
-        id: diff_biome
-        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
-      - name: commit
-        if: steps.diff_biome.outputs.modified == 'true'
-        run: |
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "GitHub Actions"
-          git commit -am "chore: fix biome linting errors"
-          git push
       - name: run prettier
         run: bunx prettier -w .
       - name: diff
-        id: diff_prettier
-        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
-      - name: commit
-        if: steps.diff_prettier.outputs.modified == 'true'
+        id: diff
         run: |
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "GitHub Actions"
-          git commit -am "chore: format with prettier"
-          git push
+          git add .
+          git diff --staged --quiet || echo "modified=true" >> $GITHUB_OUTPUT
+      - uses: planetscale/ghcommit-action@v0.2.5
+        name: commit
+        if: steps.diff.outputs.modified == 'true'
+        with:
+          commit_message: "chore: fix linting errors and format"
+          repo: ${{ github.repository }}
+          branch: ${{ github.head_ref || github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
