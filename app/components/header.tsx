@@ -1,17 +1,17 @@
-import { Form, NavLink } from "@remix-run/react";
 import type { User } from "lucia";
 import { TbLogin, TbLogout, TbUserCircle, TbUserPlus } from "react-icons/tb";
+import { Form, NavLink } from "react-router";
 
 export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
   return (
     <header>
-      <div className="min-h-26 flex items-center justify-between bg-white px-4">
+      <div className="flex min-h-26 items-center justify-between bg-white px-4">
         <a
           href="https://lppfb.ufms.br/"
           title="Retornar ao site principal do LPPFB"
         >
           <img
-            className="my-2 h-24 max-w-md text-balance text-center"
+            className="my-2 h-24 max-w-md text-center text-balance"
             src="/images/static/lppfb-logo.jpg"
             alt="UFMS - LABORATÓRIO DE PURIFICAÇÃO DE PROTEÍNAS E SUAS FUNÇÕES BIOLÓGICAS"
           />
@@ -28,7 +28,7 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
             <Form method="post" action="/logout">
               <button
                 type="submit"
-                className="flex items-center gap-2 rounded-full bg-gradient-to-l from-neutral-200 to-neutral-100 py-2 pl-5 pr-4 text-lg font-bold"
+                className="flex items-center gap-2 rounded-full bg-gradient-to-l from-neutral-200 to-neutral-100 py-2 pr-4 pl-5 text-lg font-bold"
               >
                 Sair <TbLogout size="2rem" />
               </button>
@@ -39,14 +39,14 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
             <NavLink
               prefetch="intent"
               to="/login"
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pl-5 pr-4 text-lg font-bold text-white"
+              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pr-4 pl-5 text-lg font-bold text-white"
             >
               Entrar <TbLogin size="2rem" />
             </NavLink>
             <NavLink
               prefetch="intent"
               to="/register"
-              className="flex items-center gap-2 rounded-full bg-gradient-to-l from-neutral-200 to-neutral-100 py-2 pl-5 pr-4 text-lg font-bold"
+              className="flex items-center gap-2 rounded-full bg-gradient-to-l from-neutral-200 to-neutral-100 py-2 pr-4 pl-5 text-lg font-bold"
             >
               Cadastrar <TbUserPlus size="2rem" />
             </NavLink>

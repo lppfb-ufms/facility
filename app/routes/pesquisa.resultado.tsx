@@ -1,16 +1,16 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { NavLink, useLoaderData, useNavigate } from "@remix-run/react";
 import { type SQL, eq, ilike, or, sql } from "drizzle-orm";
 import { TbFlaskFilled } from "react-icons/tb";
-import { db } from "~/.server/db/connection";
+import type { LoaderFunctionArgs } from "react-router";
+import { NavLink, useLoaderData, useNavigate } from "react-router";
+import { Container } from "~/components/container";
+import { db } from "~/db/connection.server";
 import {
   funcaoBiologicaTable,
   nomePopularTable,
   organismoTable,
   organismoToNomePopularTable,
   peptideoTable,
-} from "~/.server/db/schema";
-import { Container } from "~/components/container";
+} from "~/db/schema";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { searchParams } = new URL(request.url);

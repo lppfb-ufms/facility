@@ -1,5 +1,5 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/react";
+import type { ActionFunctionArgs } from "react-router";
+import { redirect } from "react-router";
 import { lucia } from "~/.server/auth";
 
 export async function action({ request }: ActionFunctionArgs) {

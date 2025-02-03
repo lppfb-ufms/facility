@@ -1,16 +1,16 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, redirect, useLoaderData, useNavigate } from "@remix-run/react";
 import { eq } from "drizzle-orm";
 import { useMemo } from "react";
 import { TbFlaskFilled, TbPencil } from "react-icons/tb";
 import ReactMarkdown from "react-markdown";
+import type { LoaderFunctionArgs } from "react-router";
+import { Link, redirect, useLoaderData, useNavigate } from "react-router";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import { auth } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { peptideoTable } from "~/.server/db/schema";
 import { Container } from "~/components/container";
+import { db } from "~/db/connection.server";
+import { peptideoTable } from "~/db/schema";
 import "katex/dist/katex.min.css";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
@@ -151,7 +151,7 @@ export default function Peptideo() {
           <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
             Sequência
           </h3>
-          <p className="mt-2 break-words rounded-lg bg-neutral-50 px-4 py-2">
+          <p className="mt-2 rounded-lg bg-neutral-50 px-4 py-2 break-words">
             {peptideo.sequencia ?? "(sem dados)"}
           </p>
         </div>
@@ -283,7 +283,7 @@ export default function Peptideo() {
             <Link
               prefetch="intent"
               to={`/peptideo/edit/${peptideo.id}`}
-              className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pl-3 pr-4 font-bold text-white"
+              className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pr-4 pl-3 font-bold text-white"
             >
               <TbPencil size="1.5rem" /> Editar
             </Link>

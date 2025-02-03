@@ -18,16 +18,14 @@ jobs:
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
-      - name: setup node
-        uses: actions/setup-node@v4
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: "lts/*"
-          cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
+          bun-version: latest
       - name: install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
       - name: run biome
-        run: npx biome check --write --unsafe .
+        run: bunx biome check --write --unsafe .
       - name: diff
         id: diff_biome
         run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
@@ -39,7 +37,7 @@ jobs:
           git commit -am "chore: fix biome linting errors"
           git push
       - name: run prettier
-        run: npx prettier -w .
+        run: bunx prettier -w .
       - name: diff
         id: diff_prettier
         run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT

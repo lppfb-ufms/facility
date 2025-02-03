@@ -5,15 +5,14 @@ import {
   getTextareaProps,
   useForm,
 } from "@conform-to/react";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form, redirect, useActionData } from "@remix-run/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { inArray } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-valibot";
 import { TbPlus, TbTrash } from "react-icons/tb";
+import type { ActionFunctionArgs } from "react-router";
+import { Form, redirect, useActionData } from "react-router";
 import {
   array,
-  boolean,
-  fallback,
   integer,
   number,
   object,
@@ -24,7 +23,14 @@ import {
   transform,
 } from "valibot";
 import { auth, lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
+import {
+  CheckboxInput,
+  FormErrorMessage,
+  SubmitButton,
+  TextAreaInput,
+  TextInput,
+} from "~/components/form";
+import { db } from "~/db/connection.server";
 import {
   caracteristicasAdicionaisTable,
   funcaoBiologicaTable,
@@ -34,14 +40,7 @@ import {
   peptideoTable,
   peptideoToPublicacaoTable,
   publicacaoTable,
-} from "~/.server/db/schema";
-import {
-  CheckboxInput,
-  FormErrorMessage,
-  SubmitButton,
-  TextAreaInput,
-  TextInput,
-} from "~/components/form";
+} from "~/db/schema";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { session } = await auth(request);
@@ -182,16 +181,19 @@ export async function action({ request }: ActionFunctionArgs) {
 setSpecificMessage(string, "Campo obrigatório");
 setSpecificMessage(number, "Número inválido");
 setSpecificMessage(integer, "Informe um número inteiro");
-// TODO: use drizzle-valibot
-// waiting for https://github.com/drizzle-team/drizzle-orm/pull/2481
 const schema = object({
-  id: optional(pipe(number(), integer())),
-  identificador: optional(string()),
-  sequencia: string(),
-  sintetico: fallback(boolean(), false),
-  descobertaLPPFB: fallback(boolean(), false),
-  bancoDados: optional(string()),
-  palavrasChave: optional(string()),
+  ...createInsertSchema(peptideoTable).entries,
+  funcaoBiologica: optional(array(createInsertSchema(funcaoBiologicaTable))),
+  caracteristicasAdicionais: optional(
+    array(createInsertSchema(caracteristicasAdicionaisTable)),
+  ),
+  publicacao: optional(array(createInsertSchema(publicacaoTable))),
+  organismo: optional(
+    object({
+      nomePopular: optional(array(createInsertSchema(nomePopularTable))),
+      ...createInsertSchema(organismoTable).entries,
+    }),
+  ),
   quantidadeAminoacidos: optional(
     pipe(
       string(),
@@ -215,51 +217,6 @@ const schema = object({
       number(),
       transform((num) => num?.toString()),
     ),
-  ),
-  microbiologia: optional(string()),
-  atividadeAntifungica: optional(string()),
-  ensaioCelular: optional(string()),
-  propriedadesFisicoQuimicas: optional(string()),
-  funcaoBiologica: optional(
-    array(
-      object({
-        id: optional(pipe(number(), integer())),
-        value: string(),
-      }),
-    ),
-  ),
-  caracteristicasAdicionais: optional(
-    array(
-      object({
-        id: optional(pipe(number(), integer())),
-        value: string(),
-      }),
-    ),
-  ),
-  publicacao: optional(
-    array(
-      object({
-        id: optional(pipe(number(), integer())),
-        doi: optional(string()),
-        titulo: optional(string()),
-      }),
-    ),
-  ),
-  organismo: optional(
-    object({
-      id: optional(pipe(number(), integer())),
-      nomeCientifico: optional(string()),
-      origem: optional(string()),
-      familia: optional(string()),
-      nomePopular: optional(
-        array(
-          object({
-            nome: string(),
-            id: optional(pipe(number(), integer())),
-          }),
-        ),
-      ),
-    }),
   ),
 });
 

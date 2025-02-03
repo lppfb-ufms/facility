@@ -5,11 +5,9 @@ export default defineConfig({
   out: "./migrations",
   dialect: "postgresql",
   dbCredentials: {
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-    database: process.env.PGDATABASE || "postgres",
-    host: process.env.PGHOST || "localhost",
-    port: Number(process.env.PGPORT || 5432),
+    url:
+      process.env.DATABASE_URL ||
+      "postgres://postgres:postgres@localhost:5432/facility",
   },
   casing: "snake_case",
 });

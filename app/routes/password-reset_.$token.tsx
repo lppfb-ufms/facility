@@ -1,14 +1,14 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import {
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-  redirect,
-} from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
 import { parseWithValibot } from "conform-to-valibot";
 import { eq } from "drizzle-orm";
 import { sha256 } from "oslo/crypto";
 import { encodeHex } from "oslo/encoding";
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  redirect,
+} from "react-router";
+import { Form, useActionData } from "react-router";
 import {
   forward,
   minLength,
@@ -18,10 +18,10 @@ import {
   string,
 } from "valibot";
 import { auth, lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { passwordResetTokenTable, userTable } from "~/.server/db/schema";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
+import { db } from "~/db/connection.server";
+import { passwordResetTokenTable, userTable } from "~/db/schema";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const token = params.token;
@@ -72,13 +72,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   await lucia.invalidateUserSessions(dbToken.userId);
 
-  const { hash } = await import("@node-rs/argon2");
   const { password } = submission.value;
-  const passwordHash = await hash(password, {
+  const passwordHash = await Bun.password.hash(password, {
     memoryCost: 19456,
     timeCost: 2,
-    outputLen: 32,
-    parallelism: 1,
+    algorithm: "argon2id",
   });
 
   await db

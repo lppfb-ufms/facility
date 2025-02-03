@@ -1,8 +1,8 @@
-import { Form, Link, useLoaderData } from "@remix-run/react";
 import type { FormEvent } from "react";
 import { TbPencil, TbTextPlus, TbTrash } from "react-icons/tb";
-import { db } from "~/.server/db/connection";
-import { casoSucessoTable } from "~/.server/db/schema";
+import { Form, Link, useLoaderData } from "react-router";
+import { db } from "~/db/connection.server";
+import { casoSucessoTable } from "~/db/schema";
 
 export async function loader() {
   const casosDeSucesso = await db.select().from(casoSucessoTable);
@@ -18,7 +18,7 @@ export default function Glossario() {
         <Link
           prefetch="intent"
           to="inserir"
-          className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pl-5 pr-4 text-lg font-bold text-white"
+          className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pr-4 pl-5 text-lg font-bold text-white"
         >
           Adicionar caso de sucesso <TbTextPlus size="2rem" />
         </Link>
@@ -30,7 +30,7 @@ export default function Glossario() {
               <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-1">
                   <p className="text-cyan-600">{peptideProduct}</p>
-                  <blockquote className="text-sm italic text-neutral-700">
+                  <blockquote className="text-sm text-neutral-700 italic">
                     {application}
                   </blockquote>
                   <p className="text-sm text-neutral-700">{manufacturer}</p>
@@ -39,7 +39,7 @@ export default function Glossario() {
                   <Link
                     prefetch="intent"
                     to={`edit/${id}`}
-                    className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-1 pl-2 pr-4 text-sm font-bold text-white"
+                    className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-1 pr-4 pl-2 text-sm font-bold text-white"
                   >
                     <TbPencil size="1.5rem" /> Editar
                   </Link>
@@ -57,7 +57,7 @@ export default function Glossario() {
                   >
                     <button
                       type="submit"
-                      className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-red-800 to-red-700 py-1 pl-2 pr-4 text-sm font-bold text-white"
+                      className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-red-800 to-red-700 py-1 pr-4 pl-2 text-sm font-bold text-white"
                     >
                       <TbTrash size="1.5rem" /> Apagar
                     </button>

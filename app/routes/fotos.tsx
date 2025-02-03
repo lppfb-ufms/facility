@@ -1,7 +1,7 @@
-import { useLoaderData } from "@remix-run/react";
-import { db } from "~/.server/db/connection";
-import { imageMetadataTable } from "~/.server/db/schema";
+import { useLoaderData } from "react-router";
 import { Container } from "~/components/container";
+import { db } from "~/db/connection.server";
+import { imageMetadataTable } from "~/db/schema";
 
 export async function loader() {
   const images = await db
@@ -33,7 +33,7 @@ export default function Fotos() {
               />
             </div>
             {!!alt && (
-              <figcaption className="bg-neutral-400 bg-opacity-5 p-4 text-center italic text-neutral-800">
+              <figcaption className="bg-opacity-5 bg-neutral-400 p-4 text-center text-neutral-800 italic">
                 {alt}
               </figcaption>
             )}

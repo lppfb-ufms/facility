@@ -16,11 +16,7 @@ services:
     depends_on:
       - db
     environment:
-      - PGHOST=db
-      - PGPORT=${PGPORT}
-      - PGUSER=${PGUSER}
-      - PGPASSWORD=${PGPASSWORD}
-      - PGDATABASE=${PGDATABASE}
+      - DATABASE_URL=postgres://${PGUSER}:${PGPASSWORD}@db:5432/${PGDATABASE}
       - NODE_ENV=production
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASS=${EMAIL_PASS}

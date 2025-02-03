@@ -1,10 +1,10 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { Form, redirect, useFetcher, useLoaderData } from "@remix-run/react";
 import { eq } from "drizzle-orm";
 import { TbShieldMinus, TbShieldPlus, TbTrash } from "react-icons/tb";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { Form, redirect, useFetcher, useLoaderData } from "react-router";
 import { auth } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { userTable } from "~/.server/db/schema";
+import { db } from "~/db/connection.server";
+import { userTable } from "~/db/schema";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { user } = await auth(request);
@@ -75,11 +75,11 @@ export default function Usuarios() {
                   </p>
                   <p className="text-sm">
                     <span className="text-cyan-600">Email: </span>
-                    <span className="italic text-neutral-700">{email}</span>
+                    <span className="text-neutral-700 italic">{email}</span>
                   </p>
                   <p className="text-sm">
                     <span className="text-cyan-600">Conta criada em: </span>
-                    <span className="italic text-neutral-700">
+                    <span className="text-neutral-700 italic">
                       {Intl.DateTimeFormat("pt-BR", {
                         weekday: "short",
                         year: "numeric",
@@ -93,13 +93,13 @@ export default function Usuarios() {
                   </p>
                   <p className="text-sm">
                     <span className="text-cyan-600">Email verificado: </span>
-                    <span className="italic text-neutral-700">
+                    <span className="text-neutral-700 italic">
                       {emailVerified ? "sim" : "não"}
                     </span>
                   </p>
                   <p className="text-sm">
                     <span className="text-cyan-600">Administrador: </span>
-                    <span className="italic text-neutral-700">
+                    <span className="text-neutral-700 italic">
                       {isAdmin ? "sim" : "não"}
                     </span>
                   </p>
@@ -109,7 +109,7 @@ export default function Usuarios() {
                     {isAdmin ? (
                       <button
                         type="button"
-                        className="flex w-min items-center gap-2 rounded-2xl bg-gradient-to-r from-neutral-600 to-neutral-700 py-1 pl-2 pr-4 text-center text-sm font-bold text-white"
+                        className="flex w-min items-center gap-2 rounded-2xl bg-gradient-to-r from-neutral-600 to-neutral-700 py-1 pr-4 pl-2 text-center text-sm font-bold text-white"
                         onClick={() =>
                           fetcher.submit(
                             {
@@ -127,7 +127,7 @@ export default function Usuarios() {
                     ) : (
                       <button
                         type="button"
-                        className="flex w-min items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-600 to-cyan-500 py-1 pl-2 pr-4 text-center text-sm font-bold text-white"
+                        className="flex w-min items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-600 to-cyan-500 py-1 pr-4 pl-2 text-center text-sm font-bold text-white"
                         onClick={() =>
                           fetcher.submit(
                             {
@@ -158,7 +158,7 @@ export default function Usuarios() {
                     >
                       <button
                         type="submit"
-                        className="flex w-min items-center gap-2 rounded-2xl bg-gradient-to-r from-red-800 to-red-700 py-1 pl-2 pr-4 text-sm font-bold text-white"
+                        className="flex w-min items-center gap-2 rounded-2xl bg-gradient-to-r from-red-800 to-red-700 py-1 pr-4 pl-2 text-sm font-bold text-white"
                       >
                         <TbTrash size="2.5rem" /> Apagar Usuário
                       </button>

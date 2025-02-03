@@ -1,6 +1,6 @@
-import { type LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { Form, Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { TbShieldCheckFilled, TbShieldFilled, TbShieldX } from "react-icons/tb";
+import { type LoaderFunctionArgs, redirect } from "react-router";
+import { Form, Link, useFetcher, useLoaderData } from "react-router";
 import { auth } from "~/.server/auth";
 import { Container } from "~/components/container";
 

@@ -1,19 +1,23 @@
-import {
-  type ActionFunctionArgs,
-  MaxPartSizeExceededError,
-  NodeOnDiskFile,
-  unstable_composeUploadHandlers as composeUploadHandlers,
-  unstable_createFileUploadHandler as createFileUploadHandler,
-  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
-  unstable_parseMultipartFormData as parseMultipartFormData,
-} from "@remix-run/node";
-import { Form, redirect, useActionData, useNavigate } from "@remix-run/react";
+import { getFormProps, getInputProps, useForm } from "@conform-to/react";
+import { parseWithValibot } from "conform-to-valibot";
 import { useState } from "react";
 import { TbFileUpload } from "react-icons/tb";
+import type { ActionFunctionArgs } from "react-router";
+import { Form, redirect, useActionData, useNavigate } from "react-router";
+import {
+  file,
+  maxSize,
+  mimeType,
+  minSize,
+  object,
+  optional,
+  pipe,
+  string,
+} from "valibot";
 import { auth, lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { imageMetadataTable } from "~/.server/db/schema";
-import { SubmitButton, TextInput } from "~/components/form";
+import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
+import { db } from "~/db/connection.server";
+import { imageMetadataTable } from "~/db/schema";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { session, user } = await auth(request);
@@ -40,63 +44,61 @@ export async function action({ request }: ActionFunctionArgs) {
     return redirect("/");
   }
 
-  try {
-    const formData = await parseMultipartFormData(
-      request,
-      composeUploadHandlers(
-        createFileUploadHandler({
-          maxPartSize: 25_000_000, // 25MB
-          file: ({ filename }) => filename,
-          filter: ({ contentType, name }) =>
-            contentType.startsWith("image/") && name === "image",
-          avoidFileConflicts: true,
-          directory: `${process.env.UPLOAD_DIRECTORY}/images/upload`,
-        }),
-        // parse alt text into memory
-        createMemoryUploadHandler({
-          filter: ({ name }) => {
-            return name === "alt";
-          },
-        }),
-        // TODO: maybe this API will change in the future, should implement some tests
-        // or is the type checking from TS enough?
-        ({ filename, contentType }) => {
-          throw new Error(
-            `Falha ao realizar upload de "${filename}": Tipo de conteúdo "${contentType}" não é suportado.`,
-          );
-        },
+  const formData = await request.formData();
+  const submission = parseWithValibot(formData, {
+    schema: object({
+      alt: optional(string()),
+      image: pipe(
+        file(),
+        minSize(1, "Arquivo vazio."),
+        mimeType(
+          [
+            "image/apng",
+            "image/avif",
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/svg+xml",
+            "image/webp",
+          ],
+          "Formato de arquivo não suportado.",
+        ),
+        maxSize(1024 * 1024 * 25, "Arquivo excedeu o tamanho máximo de 25MB."),
       ),
-    );
-    const file = formData.get("image");
-    if (!(file instanceof NodeOnDiskFile)) {
-      return { message: "Falha ao realizar upload da imagem", ok: false };
-    }
+    }),
+  });
 
-    const alt = formData.get("alt");
+  if (submission.status !== "success") {
+    return submission.reply();
+  }
+
+  try {
+    const path = await import("node:path");
+
+    Bun.write(
+      path.join("public/images/upload", submission.value.image.name),
+      submission.value.image,
+    );
 
     await db.insert(imageMetadataTable).values({
-      fileName: file.name,
-      alt: alt?.toString().trim(),
+      fileName: submission.value.image.name,
+      alt: submission.value.alt,
     });
 
-    return { message: "Imagem enviada com sucesso", ok: true };
-  } catch (error) {
-    if (error instanceof MaxPartSizeExceededError) {
-      return {
-        message: "Arquivo excedeu o tamanho máximo de 25MB",
-        ok: false,
-      };
-    }
-    if (error instanceof Error) {
-      return { message: error.message, ok: false };
-    }
+    return redirect("/admin/fotos");
+  } catch {
+    return submission.reply({ formErrors: ["Erro ao enviar foto."] });
   }
 }
 
 export default function Upload() {
-  const data = useActionData<typeof action>();
+  const lastResult = useActionData<typeof action>();
   const [filename, setFilename] = useState("");
   const navigate = useNavigate();
+
+  const [form, fields] = useForm({
+    lastResult,
+  });
 
   return (
     <div className="mb-4 flex flex-col items-center justify-center gap-2">
@@ -104,22 +106,29 @@ export default function Upload() {
         method="post"
         encType="multipart/form-data"
         className="w-full lg:w-4/5"
+        {...getFormProps(form)}
       >
-        <label className="mb-2 flex h-36 w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-neutral-200 bg-neutral-50">
+        <label
+          htmlFor={fields.image.id}
+          className="mb-2 flex h-36 w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-neutral-200 bg-neutral-50"
+        >
           <TbFileUpload size="2rem" />
           Selecionar foto...
           {filename ? <p>Selecionado: {filename}</p> : null}
           <input
-            type="file"
-            name="image"
             accept="image/*"
             className="hidden"
+            {...getInputProps(fields.image, { type: "file" })}
             onChange={(e) =>
               setFilename(e.target.files?.length ? e.target.files[0].name : "")
             }
           />
         </label>
-        <TextInput label="Descrição da imagem" type="text" name="alt" />
+        <FormErrorMessage errors={fields.image.errors} />
+        <TextInput
+          label="Descrição da imagem"
+          {...getInputProps(fields.alt, { type: "text" })}
+        />
         <div className="m-4 flex items-center justify-center gap-2">
           <SubmitButton>Enviar</SubmitButton>
           <button
@@ -130,13 +139,9 @@ export default function Upload() {
             Cancelar
           </button>
         </div>
-        {data ? (
-          <p
-            className={`${data.ok ? "bg-cyan-100 text-cyan-700" : "bg-red-50 text-red-800"} rounded-xl px-4 py-2 text-base`}
-          >
-            {data.message}
-          </p>
-        ) : null}
+        {form.errors !== undefined && form.errors.length > 0 && (
+          <FormErrorMessage errors={form.errors} />
+        )}
       </Form>
     </div>
   );

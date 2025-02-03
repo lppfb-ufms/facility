@@ -1,5 +1,3 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { NavLink, Outlet, redirect } from "@remix-run/react";
 import { type ReactNode, memo, useCallback, useMemo } from "react";
 import { IconContext } from "react-icons";
 import { SiMoleculer } from "react-icons/si";
@@ -12,6 +10,8 @@ import {
   TbReport,
   TbUsersGroup,
 } from "react-icons/tb";
+import type { LoaderFunctionArgs } from "react-router";
+import { NavLink, Outlet, redirect } from "react-router";
 import { auth, lucia } from "~/.server/auth";
 import { Container } from "~/components/container";
 

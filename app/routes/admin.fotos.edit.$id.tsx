@@ -1,19 +1,14 @@
+import { eq } from "drizzle-orm";
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   redirect,
-} from "@remix-run/node";
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigate,
-} from "@remix-run/react";
-import { eq } from "drizzle-orm";
+} from "react-router";
+import { Form, useActionData, useLoaderData, useNavigate } from "react-router";
 import { auth, lucia } from "~/.server/auth";
-import { db } from "~/.server/db/connection";
-import { imageMetadataTable } from "~/.server/db/schema";
 import { SubmitButton, TextInput } from "~/components/form";
+import { db } from "~/db/connection.server";
+import { imageMetadataTable } from "~/db/schema";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { id } = params;

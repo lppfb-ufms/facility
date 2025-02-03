@@ -1,7 +1,7 @@
-import { NavLink, useLoaderData } from "@remix-run/react";
 import { TbPhotoPlus } from "react-icons/tb";
-import { db } from "~/.server/db/connection";
-import { imageMetadataTable } from "~/.server/db/schema";
+import { NavLink, useLoaderData } from "react-router";
+import { db } from "~/db/connection.server";
+import { imageMetadataTable } from "~/db/schema";
 
 export async function loader() {
   const images = await db
@@ -22,7 +22,7 @@ export default function Fotos() {
         <NavLink
           prefetch="intent"
           to="upload"
-          className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pl-5 pr-4 text-lg font-bold text-white"
+          className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pr-4 pl-5 text-lg font-bold text-white"
         >
           Adicionar foto <TbPhotoPlus size="2rem" />
         </NavLink>

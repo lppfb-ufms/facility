@@ -1,6 +1,6 @@
-import { Link, useLoaderData } from "@remix-run/react";
-import { db } from "~/.server/db/connection";
+import { Link, useLoaderData } from "react-router";
 import { Container } from "~/components/container";
+import { db } from "~/db/connection.server";
 
 export async function loader() {
   return await db.query.peptideoTable.findMany({
@@ -74,7 +74,7 @@ export default function ListPanel() {
                         .join(", ")
                     : "(sem dados)"}
                 </td>
-                <td className="max-w-lg break-words px-4 py-4 font-mono">
+                <td className="max-w-lg px-4 py-4 font-mono break-words">
                   {sequencia ?? "(sem dados)"}
                 </td>
                 <td className="px-4 py-4">

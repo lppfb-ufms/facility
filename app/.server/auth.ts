@@ -9,13 +9,13 @@ import {
 } from "lucia";
 import { alphabet, generateRandomString, sha256 } from "oslo/crypto";
 import { encodeHex } from "oslo/encoding";
-import { db } from "~/.server/db/connection";
+import { db } from "~/db/connection.server";
 import {
   emailVerificationCodeTable,
   passwordResetTokenTable,
   sessionTable,
   userTable,
-} from "~/.server/db/schema";
+} from "~/db/schema";
 
 const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
 

@@ -1,6 +1,6 @@
-import { useLoaderData } from "@remix-run/react";
-import { db } from "~/.server/db/connection";
+import { useLoaderData } from "react-router";
 import { Container } from "~/components/container";
+import { db } from "~/db/connection.server";
 
 export async function loader() {
   const casosDeSucesso = await db.query.casoSucessoTable.findMany({
