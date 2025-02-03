@@ -1,6 +1,6 @@
-import { Form, Link, useLoaderData } from "react-router";
 import type { FormEvent } from "react";
 import { TbPencil, TbTextPlus, TbTrash } from "react-icons/tb";
+import { Form, Link, useLoaderData } from "react-router";
 import { db } from "~/db/connection.server";
 import { casoSucessoTable } from "~/db/schema";
 

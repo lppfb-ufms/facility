@@ -5,11 +5,12 @@ import {
   getTextareaProps,
   useForm,
 } from "@conform-to/react";
-import type { ActionFunctionArgs } from "react-router";
-import { Form, redirect, useActionData } from "react-router";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { inArray } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-valibot";
 import { TbPlus, TbTrash } from "react-icons/tb";
+import type { ActionFunctionArgs } from "react-router";
+import { Form, redirect, useActionData } from "react-router";
 import {
   array,
   integer,
@@ -22,6 +23,13 @@ import {
   transform,
 } from "valibot";
 import { auth, lucia } from "~/.server/auth";
+import {
+  CheckboxInput,
+  FormErrorMessage,
+  SubmitButton,
+  TextAreaInput,
+  TextInput,
+} from "~/components/form";
 import { db } from "~/db/connection.server";
 import {
   caracteristicasAdicionaisTable,
@@ -33,14 +41,6 @@ import {
   peptideoToPublicacaoTable,
   publicacaoTable,
 } from "~/db/schema";
-import {
-  CheckboxInput,
-  FormErrorMessage,
-  SubmitButton,
-  TextAreaInput,
-  TextInput,
-} from "~/components/form";
-import { createInsertSchema } from "drizzle-valibot";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { session } = await auth(request);

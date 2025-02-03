@@ -1,14 +1,14 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Form, redirect, useActionData, useFetcher } from "react-router";
 import { parseWithValibot } from "conform-to-valibot";
 import { eq } from "drizzle-orm";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { Form, redirect, useActionData, useFetcher } from "react-router";
 import { object, string } from "valibot";
 import { auth, lucia, verifyVerificationCode } from "~/.server/auth";
-import { db } from "~/db/connection.server";
-import { userTable } from "~/db/schema";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
+import { db } from "~/db/connection.server";
+import { userTable } from "~/db/schema";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { user } = await auth(request);

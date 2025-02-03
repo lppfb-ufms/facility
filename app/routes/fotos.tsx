@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router";
+import { Container } from "~/components/container";
 import { db } from "~/db/connection.server";
 import { imageMetadataTable } from "~/db/schema";
-import { Container } from "~/components/container";
 
 export async function loader() {
   const images = await db

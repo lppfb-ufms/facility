@@ -1,6 +1,6 @@
-import { Form } from "react-router";
 import { useState } from "react";
 import { TbSearch } from "react-icons/tb";
+import { Form } from "react-router";
 
 export default function Index() {
   return (

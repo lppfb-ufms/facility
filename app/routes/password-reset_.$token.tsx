@@ -1,14 +1,14 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
+import { parseWithValibot } from "conform-to-valibot";
+import { eq } from "drizzle-orm";
+import { sha256 } from "oslo/crypto";
+import { encodeHex } from "oslo/encoding";
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   redirect,
 } from "react-router";
 import { Form, useActionData } from "react-router";
-import { parseWithValibot } from "conform-to-valibot";
-import { eq } from "drizzle-orm";
-import { sha256 } from "oslo/crypto";
-import { encodeHex } from "oslo/encoding";
 import {
   forward,
   minLength,
@@ -18,10 +18,10 @@ import {
   string,
 } from "valibot";
 import { auth, lucia } from "~/.server/auth";
-import { db } from "~/db/connection.server";
-import { passwordResetTokenTable, userTable } from "~/db/schema";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
+import { db } from "~/db/connection.server";
+import { passwordResetTokenTable, userTable } from "~/db/schema";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const token = params.token;

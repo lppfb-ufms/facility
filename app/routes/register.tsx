@@ -1,9 +1,9 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import type { ActionFunctionArgs } from "react-router";
-import { Form, redirect, useActionData } from "react-router";
 import { parseWithValibot } from "conform-to-valibot";
 import { count, eq, gte } from "drizzle-orm";
 import { generateIdFromEntropySize } from "lucia";
+import type { ActionFunctionArgs } from "react-router";
+import { Form, redirect, useActionData } from "react-router";
 import {
   email,
   forward,
@@ -15,11 +15,11 @@ import {
   string,
 } from "valibot";
 import { generateEmailVerificationCode, lucia } from "~/.server/auth";
-import { db } from "~/db/connection.server";
-import { userTable } from "~/db/schema";
 import { transporter } from "~/.server/email";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
+import { db } from "~/db/connection.server";
+import { userTable } from "~/db/schema";
 
 setSpecificMessage(string, "Campo obrigatório");
 const schema = pipe(

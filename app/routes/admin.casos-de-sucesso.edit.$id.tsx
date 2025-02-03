@@ -1,13 +1,17 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
-import { type ActionFunctionArgs, type LoaderFunctionArgs, redirect } from "react-router";
-import { Form, useActionData, useLoaderData, useNavigate } from "react-router";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { eq } from "drizzle-orm";
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  redirect,
+} from "react-router";
+import { Form, useActionData, useLoaderData, useNavigate } from "react-router";
 import { object, optional, string } from "valibot";
 import { auth, lucia } from "~/.server/auth";
+import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
 import { db } from "~/db/connection.server";
 import { casoSucessoTable } from "~/db/schema";
-import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { id } = params;

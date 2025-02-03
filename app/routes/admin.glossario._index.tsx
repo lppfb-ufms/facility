@@ -1,5 +1,5 @@
-import { Form, Link, useLoaderData } from "react-router";
 import { TbPencil, TbTextPlus, TbTrash } from "react-icons/tb";
+import { Form, Link, useLoaderData } from "react-router";
 import { db } from "~/db/connection.server";
 import { glossarioTable } from "~/db/schema";
 

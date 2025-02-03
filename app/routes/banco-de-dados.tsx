@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "react-router";
-import { db } from "~/db/connection.server";
 import { Container } from "~/components/container";
+import { db } from "~/db/connection.server";
 
 export async function loader() {
   return await db.query.peptideoTable.findMany({

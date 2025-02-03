@@ -5,15 +5,15 @@ import {
   getTextareaProps,
   useForm,
 } from "@conform-to/react";
+import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
+import { and, eq, inArray } from "drizzle-orm";
+import { TbPlus, TbTrash } from "react-icons/tb";
 import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   redirect,
 } from "react-router";
 import { Form, useActionData, useLoaderData, useNavigate } from "react-router";
-import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
-import { and, eq, inArray } from "drizzle-orm";
-import { TbPlus, TbTrash } from "react-icons/tb";
 import {
   array,
   boolean,
@@ -27,6 +27,14 @@ import {
   transform,
 } from "valibot";
 import { auth, lucia } from "~/.server/auth";
+import { Container } from "~/components/container";
+import {
+  CheckboxInput,
+  FormErrorMessage,
+  SubmitButton,
+  TextAreaInput,
+  TextInput,
+} from "~/components/form";
 import { db } from "~/db/connection.server";
 import {
   caracteristicasAdicionaisTable,
@@ -38,14 +46,6 @@ import {
   peptideoToPublicacaoTable,
   publicacaoTable,
 } from "~/db/schema";
-import { Container } from "~/components/container";
-import {
-  CheckboxInput,
-  FormErrorMessage,
-  SubmitButton,
-  TextAreaInput,
-  TextInput,
-} from "~/components/form";
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const { session, user } = await auth(request);

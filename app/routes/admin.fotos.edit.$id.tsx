@@ -1,10 +1,14 @@
-import { type ActionFunctionArgs, type LoaderFunctionArgs, redirect } from "react-router";
-import { Form, useActionData, useLoaderData, useNavigate } from "react-router";
 import { eq } from "drizzle-orm";
+import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  redirect,
+} from "react-router";
+import { Form, useActionData, useLoaderData, useNavigate } from "react-router";
 import { auth, lucia } from "~/.server/auth";
+import { SubmitButton, TextInput } from "~/components/form";
 import { db } from "~/db/connection.server";
 import { imageMetadataTable } from "~/db/schema";
-import { SubmitButton, TextInput } from "~/components/form";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { id } = params;

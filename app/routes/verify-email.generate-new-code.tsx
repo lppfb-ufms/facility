@@ -1,9 +1,9 @@
-import { type ActionFunctionArgs, redirect } from "react-router";
 import { eq } from "drizzle-orm";
+import { type ActionFunctionArgs, redirect } from "react-router";
 import { auth, generateEmailVerificationCode, lucia } from "~/.server/auth";
+import { transporter } from "~/.server/email";
 import { db } from "~/db/connection.server";
 import { emailVerificationCodeTable } from "~/db/schema";
-import { transporter } from "~/.server/email";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { user, session } = await auth(request);

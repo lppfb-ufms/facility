@@ -10,12 +10,12 @@ import {
   useRouteError,
 } from "react-router";
 import "./tailwind.css";
+import type { ReactNode } from "react";
 import type {
   LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "react-router";
-import type { ReactNode } from "react";
 import { auth } from "~/.server/auth";
 import { Container } from "~/components/container";
 import { Header } from "~/components/header";

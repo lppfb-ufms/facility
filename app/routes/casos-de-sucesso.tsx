@@ -1,6 +1,6 @@
 import { useLoaderData } from "react-router";
-import { db } from "~/db/connection.server";
 import { Container } from "~/components/container";
+import { db } from "~/db/connection.server";
 
 export async function loader() {
   const casosDeSucesso = await db.query.casoSucessoTable.findMany({

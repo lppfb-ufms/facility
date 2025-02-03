@@ -1,7 +1,7 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Form, redirect, useFetcher, useLoaderData } from "react-router";
 import { eq } from "drizzle-orm";
 import { TbShieldMinus, TbShieldPlus, TbTrash } from "react-icons/tb";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { Form, redirect, useFetcher, useLoaderData } from "react-router";
 import { auth } from "~/.server/auth";
 import { db } from "~/db/connection.server";
 import { userTable } from "~/db/schema";

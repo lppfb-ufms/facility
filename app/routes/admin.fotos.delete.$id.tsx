@@ -1,6 +1,6 @@
 import { rm } from "node:fs";
-import { type ActionFunctionArgs, redirect } from "react-router";
 import { eq } from "drizzle-orm";
+import { type ActionFunctionArgs, redirect } from "react-router";
 import { auth, lucia } from "~/.server/auth";
 import { db } from "~/db/connection.server";
 import { imageMetadataTable } from "~/db/schema";

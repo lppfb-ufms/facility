@@ -1,5 +1,6 @@
-import { Link, useLoaderData } from "react-router";
 import { eq, sql } from "drizzle-orm";
+import { Link, useLoaderData } from "react-router";
+import { Container } from "~/components/container";
 import { db } from "~/db/connection.server";
 import {
   funcaoBiologicaTable,
@@ -8,7 +9,6 @@ import {
   organismoToNomePopularTable,
   peptideoTable,
 } from "~/db/schema";
-import { Container } from "~/components/container";
 
 export async function loader() {
   const descobertas = await db

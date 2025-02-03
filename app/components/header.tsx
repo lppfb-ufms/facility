@@ -1,6 +1,6 @@
-import { Form, NavLink } from "react-router";
 import type { User } from "lucia";
 import { TbLogin, TbLogout, TbUserCircle, TbUserPlus } from "react-icons/tb";
+import { Form, NavLink } from "react-router";
 
 export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
   return (

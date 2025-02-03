@@ -1,12 +1,9 @@
-import type { ActionFunctionArgs } from "react-router";
-import { Form, redirect, useActionData, useNavigate } from "react-router";
+import { getFormProps, getInputProps, useForm } from "@conform-to/react";
+import { parseWithValibot } from "conform-to-valibot";
 import { useState } from "react";
 import { TbFileUpload } from "react-icons/tb";
-import { auth, lucia } from "~/.server/auth";
-import { db } from "~/db/connection.server";
-import { imageMetadataTable } from "~/db/schema";
-import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
-import { parseWithValibot } from "conform-to-valibot";
+import type { ActionFunctionArgs } from "react-router";
+import { Form, redirect, useActionData, useNavigate } from "react-router";
 import {
   file,
   maxSize,
@@ -14,10 +11,13 @@ import {
   minSize,
   object,
   optional,
-  string,
   pipe,
+  string,
 } from "valibot";
-import { getFormProps, getInputProps, useForm } from "@conform-to/react";
+import { auth, lucia } from "~/.server/auth";
+import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
+import { db } from "~/db/connection.server";
+import { imageMetadataTable } from "~/db/schema";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { session, user } = await auth(request);
