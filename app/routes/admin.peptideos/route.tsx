@@ -74,14 +74,18 @@ export default function Peptideos({ loaderData }: Route.ComponentProps) {
 
 function ResultCount({
   promise,
-}: { promise: Route.ComponentProps["loaderData"]["queryPromise"] }) {
+}: {
+  promise: Route.ComponentProps["loaderData"]["queryPromise"];
+}) {
   const data = use(promise);
   return <p>{data.length} registros encontrados</p>;
 }
 
 function TableData({
   promise,
-}: { promise: Route.ComponentProps["loaderData"]["queryPromise"] }) {
+}: {
+  promise: Route.ComponentProps["loaderData"]["queryPromise"];
+}) {
   const data = use(promise);
 
   return (
