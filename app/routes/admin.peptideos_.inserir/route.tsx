@@ -1,9 +1,14 @@
 import {
+  type FieldName,
+  type FormId,
+  FormProvider,
   getFieldsetProps,
   getFormProps,
   getInputProps,
   getTextareaProps,
+  useField,
   useForm,
+  useFormMetadata,
 } from "@conform-to/react";
 import { getValibotConstraint, parseWithValibot } from "conform-to-valibot";
 import { inArray } from "drizzle-orm";
@@ -11,8 +16,9 @@ import { createInsertSchema } from "drizzle-valibot";
 import { TbPlus, TbTrash } from "react-icons/tb";
 import type { Route } from "./+types/route";
 
-import { Form, redirect } from "react-router";
+import { Form, redirect, useNavigate } from "react-router";
 import {
+  type InferOutput,
   array,
   integer,
   number,
@@ -230,15 +236,15 @@ export default function InsertPanel({ actionData }: Route.ComponentProps) {
     },
   });
 
-  const organismo = fields.organismo.getFieldset();
-  const nomesPopulares = organismo.nomePopular.getFieldList();
+  const navigate = useNavigate();
+
   const publicacao = fields.publicacao.getFieldList();
   const funcoesBiologicas = fields.funcaoBiologica.getFieldList();
   const caracteristicasAdicionais =
     fields.caracteristicasAdicionais.getFieldList();
 
   return (
-    <>
+    <FormProvider context={form.context}>
       <Form
         method="post"
         {...getFormProps(form)}
@@ -317,93 +323,11 @@ export default function InsertPanel({ actionData }: Route.ComponentProps) {
           <FormErrorMessage errors={fields.palavrasChave.errors} />
         </fieldset>
 
-        <fieldset
-          className="flex flex-col gap-2"
-          {...getFieldsetProps(fields.organismo)}
-        >
-          <legend className="mb-3 w-full border-b-2 border-neutral-100 text-xl font-bold text-cyan-600">
-            Dados do Organismo
-          </legend>
-          <input
-            {...getInputProps(organismo.id, { type: "hidden" })}
-            key={undefined}
-          />
-          <CheckboxInput
-            label="Sintético"
-            {...getInputProps(fields.sintetico, { type: "checkbox" })}
-            key={undefined}
-          />
-          <FormErrorMessage errors={fields.sintetico.errors} />
-          <TextInput
-            label="Espécie"
-            {...getInputProps(organismo.nomeCientifico, { type: "text" })}
-            disabled={fields.sintetico.value === "on"}
-          />
-          <FormErrorMessage errors={organismo.nomeCientifico.errors} />
-          <TextInput
-            label="Origem"
-            {...getInputProps(organismo.origem, { type: "text" })}
-            disabled={fields.sintetico.value === "on"}
-          />
-          <FormErrorMessage errors={organismo.origem.errors} />
-          <TextInput
-            label="Família"
-            {...getInputProps(organismo.familia, { type: "text" })}
-            disabled={fields.sintetico.value === "on"}
-          />
-          <FormErrorMessage errors={organismo.familia.errors} />
-
-          <fieldset
-            className="my-2 flex gap-2"
-            {...getFieldsetProps(organismo.nomePopular)}
-          >
-            <legend
-              className="mb-2 flex w-full items-center gap-3 text-cyan-600 aria-disabled:text-neutral-700"
-              aria-disabled={fields.sintetico.value === "on"}
-            >
-              Nomes Populares
-              <button
-                className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 px-2 py-1 text-sm font-bold text-white disabled:from-neutral-600 disabled:to-neutral-500"
-                {...form.insert.getButtonProps({
-                  name: organismo.nomePopular.name,
-                })}
-                disabled={fields.sintetico.value === "on"}
-              >
-                <TbPlus /> adicionar
-              </button>
-            </legend>
-            <ul className="flex w-full flex-col gap-3">
-              {nomesPopulares.map((item, index) => {
-                const nome = item.getFieldset();
-                return (
-                  <li key={item.key} className="flex flex-col">
-                    <input
-                      {...getInputProps(nome.id, { type: "hidden" })}
-                      key={undefined}
-                    />
-                    <div className="flex-grow">
-                      <TextInput
-                        {...getInputProps(nome.nome, { type: "text" })}
-                        disabled={fields.sintetico.value === "on"}
-                        key={undefined}
-                      />
-                    </div>
-                    <FormErrorMessage errors={nome.nome.errors} />
-                    <button
-                      className="mt-2 flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-red-800 to-red-700 px-2 py-1 text-sm font-bold text-white"
-                      {...form.remove.getButtonProps({
-                        name: organismo.nomePopular.name,
-                        index,
-                      })}
-                    >
-                      <TbTrash /> apagar
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </fieldset>
-        </fieldset>
+        <OrganismoForm
+          formId={form.id}
+          organismo={fields.organismo.name}
+          sintetico={fields.sintetico.name}
+        />
 
         <fieldset {...getFieldsetProps(fields.funcaoBiologica)}>
           <legend className="flex w-full items-center gap-4 border-b-2 border-neutral-100 text-xl font-bold text-cyan-600">
@@ -543,8 +467,15 @@ export default function InsertPanel({ actionData }: Route.ComponentProps) {
           )}
         />
 
-        <div className="self-center">
+        <div className="flex items-center justify-center gap-5">
           <SubmitButton>Enviar</SubmitButton>
+          <button
+            type="button"
+            className="rounded-full bg-neutral-200 px-6 py-2 text-lg font-bold"
+            onClick={() => navigate(-1)}
+          >
+            Voltar
+          </button>
         </div>
       </Form>
       {actionData?.status === "success" ? (
@@ -556,6 +487,134 @@ export default function InsertPanel({ actionData }: Route.ComponentProps) {
           Peptídeo inserido com sucesso.
         </p>
       ) : null}
-    </>
+    </FormProvider>
+  );
+}
+
+function OrganismoForm({
+  formId,
+  organismo,
+  sintetico,
+}: {
+  organismo: FieldName<InferOutput<typeof schema>["organismo"]>;
+  sintetico: FieldName<
+    InferOutput<typeof schema>["sintetico"],
+    InferOutput<typeof schema>,
+    Array<string> | undefined
+  >;
+  formId: FormId<InferOutput<typeof schema>>;
+}) {
+  const [organismoMeta] = useField(organismo);
+  const [sinteticoMeta] = useField(sintetico);
+
+  const organismoFieldset = organismoMeta.getFieldset();
+
+  return (
+    <fieldset
+      className="flex flex-col gap-2"
+      {...getFieldsetProps(organismoMeta)}
+    >
+      <legend className="mb-3 w-full border-b-2 border-neutral-100 text-xl font-bold text-cyan-600">
+        Dados do Organismo
+      </legend>
+      <input {...getInputProps(organismoFieldset.id, { type: "hidden" })} />
+      <CheckboxInput
+        label="Sintético"
+        {...getInputProps(sinteticoMeta, { type: "checkbox" })}
+      />
+      <FormErrorMessage errors={sinteticoMeta.errors} />
+      <TextInput
+        label="Espécie"
+        {...getInputProps(organismoFieldset.nomeCientifico, { type: "text" })}
+        disabled={sinteticoMeta.value === "on"}
+      />
+      <FormErrorMessage errors={organismoFieldset.nomeCientifico.errors} />
+      <TextInput
+        label="Origem"
+        {...getInputProps(organismoFieldset.origem, { type: "text" })}
+        disabled={sinteticoMeta.value === "on"}
+      />
+      <FormErrorMessage errors={organismoFieldset.origem.errors} />
+      <TextInput
+        label="Família"
+        {...getInputProps(organismoFieldset.familia, { type: "text" })}
+        disabled={sinteticoMeta.value === "on"}
+      />
+      <FormErrorMessage errors={organismoFieldset.familia.errors} />
+
+      <NomesPopularesForm
+        formId={formId}
+        nomePopular={organismoFieldset.nomePopular.name}
+        sinteticoValue={sinteticoMeta.value}
+      />
+    </fieldset>
+  );
+}
+
+function NomesPopularesForm({
+  formId,
+  nomePopular,
+  sinteticoValue,
+}: {
+  formId: FormId<InferOutput<typeof schema>>;
+  nomePopular: FieldName<Array<{ id?: number | undefined; nome: string }>>;
+  sinteticoValue: string | undefined;
+}) {
+  const form = useFormMetadata(formId);
+  const [nomePopularMeta] = useField(nomePopular);
+
+  const nomesPopulares = nomePopularMeta.getFieldList();
+
+  return (
+    <fieldset
+      className="my-2 flex gap-2"
+      {...getFieldsetProps(nomePopularMeta)}
+    >
+      <legend
+        className="mb-2 flex w-full items-center gap-3 text-cyan-600 aria-disabled:text-neutral-700"
+        aria-disabled={sinteticoValue === "on"}
+      >
+        Nomes Populares
+        <button
+          className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 px-2 py-1 text-sm font-bold text-white disabled:from-neutral-600 disabled:to-neutral-500"
+          {...form.insert.getButtonProps({
+            name: nomePopular,
+          })}
+          disabled={sinteticoValue === "on"}
+        >
+          <TbPlus /> adicionar
+        </button>
+      </legend>
+      <ul className="flex w-full flex-col gap-3">
+        {nomesPopulares.map((item, index) => {
+          const nome = item.getFieldset();
+          return (
+            <li key={item.key} className="flex flex-col">
+              <input
+                {...getInputProps(nome.id, { type: "hidden" })}
+                key={undefined}
+              />
+              <div className="flex-grow">
+                <TextInput
+                  {...getInputProps(nome.nome, { type: "text" })}
+                  disabled={sinteticoValue === "on"}
+                  key={undefined}
+                />
+              </div>
+              <FormErrorMessage errors={nome.nome.errors} />
+              <button
+                className="mt-2 flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-red-800 to-red-700 px-2 py-1 text-sm font-bold text-white"
+                {...form.remove.getButtonProps({
+                  name: nomePopular,
+                  index,
+                })}
+              >
+                <TbTrash /> apagar
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </fieldset>
   );
 }

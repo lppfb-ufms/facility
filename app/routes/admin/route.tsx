@@ -66,16 +66,6 @@ export default function Admin() {
           <nav>
             <ul className="flex flex-col gap-5">
               <AdminNavItem
-                label="Listar registros"
-                route="listar"
-                icon={icons.search}
-              />
-              <AdminNavItem
-                label="Inserir registro"
-                route="inserir"
-                icon={icons.insert}
-              />
-              <AdminNavItem
                 label="Usuários"
                 route="usuarios"
                 icon={icons.users}

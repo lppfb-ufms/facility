@@ -20,6 +20,16 @@ export async function loader({ request }: Route.LoaderArgs) {
   const nomeCientifico = searchParams.get("nomeCientifico");
   const origem = searchParams.get("origem");
   const familia = searchParams.get("familia");
+  const sequencia = searchParams.get("sequencia");
+  const identificador = searchParams.get("identificador");
+  const palavrasChave = searchParams.get("palavrasChave");
+  const bancoDados = searchParams.get("bancoDados");
+  const funcoesBiologicas = searchParams.get("funcoesBiologicas");
+  const microbiologia = searchParams.get("microbiologia");
+  const atividadeAntifungica = searchParams.get("atividadeAntifungica");
+  const propriedadesFisicoQuimicas = searchParams.get(
+    "propriedadesFisicoQuimicas",
+  );
 
   // ilike = case-insensitive like
   // postgres only
@@ -34,6 +44,20 @@ export async function loader({ request }: Route.LoaderArgs) {
       ilike(organismoTable.nomeCientifico, `%${nomeCientifico}%`),
     !!origem && ilike(organismoTable.origem, `%${origem}%`),
     !!familia && ilike(organismoTable.familia, `%${familia}%`),
+    !!sequencia && ilike(peptideoTable.sequencia, `%${sequencia}%`),
+    !!identificador && ilike(peptideoTable.identificador, `%${identificador}%`),
+    !!palavrasChave && ilike(peptideoTable.palavrasChave, `%${palavrasChave}%`),
+    !!bancoDados && ilike(peptideoTable.bancoDados, `%${bancoDados}%`),
+    !!funcoesBiologicas &&
+      ilike(funcaoBiologicaTable.value, `%${funcoesBiologicas}%`),
+    !!microbiologia && ilike(peptideoTable.microbiologia, `%${microbiologia}%`),
+    !!atividadeAntifungica &&
+      ilike(peptideoTable.atividadeAntifungica, `%${atividadeAntifungica}%`),
+    !!propriedadesFisicoQuimicas &&
+      ilike(
+        peptideoTable.propriedadesFisicoQuimicas,
+        `%${propriedadesFisicoQuimicas}%`,
+      ),
   ].filter((like): like is SQL<unknown> => like !== false);
 
   const results = await db

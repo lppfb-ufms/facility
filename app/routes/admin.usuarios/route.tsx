@@ -68,7 +68,7 @@ export default function Usuarios({ loaderData }: Route.ComponentProps) {
       <ul className="flex flex-col gap-8">
         {users.map(
           ({ id, displayName, email, emailVerified, createdAt, isAdmin }) => (
-            <li key={id} className="rounded-lg bg-neutral-100 p-4">
+            <li key={id} className="rounded-lg bg-neutral-50 p-4">
               <div className="flex items-center justify-between">
                 <div className="flex flex-col gap-1">
                   <p className="text-cyan-600">

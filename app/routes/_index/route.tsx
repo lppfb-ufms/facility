@@ -92,7 +92,14 @@ function SearchBar() {
       <input type="hidden" name="nomeCientifico" value={query} />
       <input type="hidden" name="origem" value={query} />
       <input type="hidden" name="familia" value={query} />
-      <input type="hidden" name="casoSucesso" value={query} />
+      <input type="hidden" name="sequencia" value={query} />
+      <input type="hidden" name="identificador" value={query} />
+      <input type="hidden" name="palavrasChave" value={query} />
+      <input type="hidden" name="bancoDados" value={query} />
+      <input type="hidden" name="funcoesBiologicas" value={query} />
+      <input type="hidden" name="microbiologia" value={query} />
+      <input type="hidden" name="atividadeAntifungica" value={query} />
+      <input type="hidden" name="propriedadesFisicoQuimicas" value={query} />
       <input
         type="text"
         className="w-full rounded-l-3xl border-2 border-white bg-white px-4 py-2 text-black"
