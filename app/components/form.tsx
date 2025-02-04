@@ -4,7 +4,7 @@ export function SubmitButton({ children }: { children: ReactNode }) {
   return (
     <button
       type="submit"
-      className="rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 px-6 py-2 text-lg font-bold text-white"
+      className="rounded-full bg-gradient-to-br from-cyan-500 to-cyan-600 px-6 py-2 text-lg font-bold text-white"
     >
       {children}
     </button>

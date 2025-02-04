@@ -72,7 +72,6 @@ export default function Resultado({ loaderData }: Route.ComponentProps) {
               className="flex flex-col gap-1 rounded-2xl bg-neutral-50 px-4 py-2"
             >
               <Link
-                prefetch="intent"
                 to={`/peptideo/${peptideoId}`}
                 className="mt-1 text-2xl font-bold text-cyan-600 hover:underline"
               >
@@ -85,18 +84,18 @@ export default function Resultado({ loaderData }: Route.ComponentProps) {
                   )
                 ) : null}
               </Link>
-              <p className="text-neutral-900">
-                <b>Nome popular: </b>
+              <p className="text-neutral-800">
+                <span className="font-medium">Nome popular: </span>
                 {nomesPopulares.filter((nome) => nome !== "NULL").length > 0
                   ? nomesPopulares?.join(", ")
                   : "(sem dados)"}
               </p>
-              <p className="break-words text-neutral-900">
-                <b>Sequência: </b>
+              <p className="break-words text-neutral-800">
+                <span className="font-medium">Sequência: </span>
                 {sequencia ?? "(sem dados)"}
               </p>
-              <p className="text-neutral-900">
-                <b>Funções biológicas: </b>
+              <p className="text-neutral-800">
+                <span className="font-medium">Funções biológicas: </span>
                 {funcaoBiologica.filter((value) => value !== "NULL").length > 0
                   ? funcaoBiologica?.join(", ")
                   : "(sem dados)"}

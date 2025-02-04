@@ -5,10 +5,10 @@ import { Form } from "react-router";
 export default function Index() {
   return (
     <>
-      <div className="min-h-[34rem] overflow-x-hidden bg-[url('/images/static/molecula.png')] bg-contain bg-fixed bg-right bg-no-repeat pt-6 lg:pt-0">
-        <div className="mx-8 my-16 flex flex-col items-center justify-around lg:flex-row">
-          <div className="flex w-full flex-col items-center gap-8 lg:min-w-2/5">
-            <h1 className="px-6 text-center text-4xl font-bold text-balance text-white lg:w-96 lg:px-0">
+      <div className="min-h-[40rem] overflow-x-hidden bg-[url('/images/static/molecula.png')] bg-contain bg-fixed bg-right bg-no-repeat">
+        <div className="mx-16 my-16 flex flex-col items-center justify-around lg:flex-row">
+          <div className="flex w-full flex-col gap-8 lg:min-w-2/5">
+            <h1 className="text-6xl text-pretty block font-medium text-white lg:w-96 lg:px-0">
               Facility FoodTech do Cerrado-Pantanal
             </h1>
             <SearchBar />
@@ -27,9 +27,9 @@ export default function Index() {
           </div>
         </div>
       </div>
-      <div className="flex min-h-lvh justify-center bg-white text-justify">
-        <div className="flex flex-col gap-4 px-4 py-3 font-sans sm:p-10 md:max-w-[140ch]">
-          <h2 className="text-2xl font-bold">Introdução</h2>
+      <div className="flex justify-center bg-white text-justify">
+        <div className="flex flex-col px-4 py-3 font-sans sm:p-10 md:max-w-[120ch] prose prose-facility">
+          <h2>Introdução</h2>
           <p>
             Bem-vindo ao nosso site dedicado à pesquisa biológica com enfoque
             exclusivo nas riquezas naturais do cerrado e pantanal. Nossa
@@ -37,7 +37,7 @@ export default function Index() {
             e Suas Funções Biológicas da UFMS, coordenado pela Profª Drª Maria
             Lígia Rodrigues Macedo.
           </p>
-          <h2 className="text-2xl font-bold">Propósito</h2>
+          <h2>Propósito</h2>
           <p>
             Nosso objetivo é proporcionar um ambiente virtual abrangente para
             que comunidade científica, estudantes e entusiastas da biologia
@@ -47,19 +47,19 @@ export default function Index() {
             genômica, todos alinhados ao ecossistema único dessas regiões
             brasileiras.
           </p>
-          <h2 className="text-2xl font-bold">Explorando o Site</h2>
+          <h2>Explorando o Site</h2>
           <ul>
             <li>
-              <b>Busca Especializada</b>: Utilize nossa barra de busca para
+              <span className="font-medium">Busca Especializada</span>: Utilize nossa barra de busca para
               encontrar informações detalhadas sobre peptídeos, transcriptômica,
               proteoma e genômica associados ao cerrado e pantanal.
             </li>
             <li>
-              <b>Categorias Específicas</b>: Navegue esses biomas, oferecendo
+              <span className="font-medium">Categorias Específicas</span>: Navegue esses biomas, oferecendo
               uma visão aprofundada e segmentada de nossas pesquisas.
             </li>
             <li>
-              <b>Recursos Complementares</b>: Acesse o glossário de termos,
+              <span className="font-medium">Recursos Complementares</span>: Acesse o glossário de termos,
               links para artigos científicos, referências e a seção de download
               para aprofundar seus estudos.
             </li>

@@ -62,7 +62,6 @@ export default function Perfil({ loaderData }: Route.ComponentProps) {
           </Link>
         ) : null}
         <Link
-          prefetch="intent"
           to="edit"
           className="rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 px-6 py-2 text-lg font-bold text-white"
         >
@@ -92,7 +91,6 @@ export default function Perfil({ loaderData }: Route.ComponentProps) {
         <div className="mt-6 h-full border-t-2 border-neutral-100">
           <div className="mx-2 mt-6 flex flex-col items-center justify-center gap-6">
             <Link
-              prefetch="intent"
               to="/admin"
               className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 px-6 py-2 text-lg font-bold text-white"
             >

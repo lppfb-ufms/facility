@@ -136,7 +136,7 @@ const AdminNavItem = memo(function AdminNavItem({
   return (
     <IconContext.Provider value={iconContextValue}>
       <li>
-        <NavLink prefetch="intent" className={getClassName} to={route}>
+        <NavLink className={getClassName} to={route}>
           {icon}
           {label}
         </NavLink>

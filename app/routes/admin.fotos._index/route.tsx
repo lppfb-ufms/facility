@@ -16,7 +16,6 @@ export default function Fotos({ loaderData }: Route.ComponentProps) {
     <>
       <div className="mb-4 flex flex-col items-center border-b-2 border-b-neutral-100 pb-3">
         <Link
-          prefetch="intent"
           to="upload"
           className="flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pr-4 pl-5 text-lg font-bold text-white"
         >
@@ -60,7 +59,6 @@ export default function Fotos({ loaderData }: Route.ComponentProps) {
               </div>
               <div className="flex gap-2">
                 <Link
-                  prefetch="intent"
                   to={`edit/${id}`}
                   className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-1 pr-4 pl-2 text-sm font-bold text-white"
                 >

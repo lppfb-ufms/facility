@@ -23,7 +23,7 @@ export default function Fotos({ loaderData }: Route.ComponentProps) {
         {images.map(({ fileName, alt, id }) => (
           <figure
             key={id}
-            className="relative w-full overflow-hidden rounded-lg shadow-md"
+            className="relative w-full overflow-hidden rounded-lg shadow-md bg-neutral-100 pt-6"
           >
             <div className="relative pb-[100%]">
               <img
@@ -33,7 +33,7 @@ export default function Fotos({ loaderData }: Route.ComponentProps) {
               />
             </div>
             {!!alt && (
-              <figcaption className="bg-opacity-5 bg-neutral-400 p-4 text-center text-neutral-800 italic">
+              <figcaption className="bg-opacity-5 p-4 text-center text-neutral-800 italic">
                 {alt}
               </figcaption>
             )}

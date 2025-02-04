@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
-    "dev": "bunx --bun vite",
+    "dev": "bunx --bun react-router dev",
     "lint": "bunx biome check --write --unsafe .",
     "start": "NODE_ENV=production bun ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",

@@ -149,7 +149,7 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div>
-          <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
+          <h3 className="border-b-2 border-neutral-100 pb-2 text-2xl font-medium text-cyan-600">
             Sequência
           </h3>
           <p className="mt-2 rounded-lg bg-neutral-50 px-4 py-2 break-words">
@@ -158,7 +158,7 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div>
-          <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
+          <h3 className="border-b-2 border-neutral-100 pb-2 text-2xl font-medium text-cyan-600">
             Funções biológicas
           </h3>
 
@@ -176,7 +176,7 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div>
-          <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
+          <h3 className="border-b-2 border-neutral-100 pb-2 text-2xl font-medium text-cyan-600">
             Casos de sucesso
           </h3>
 
@@ -196,7 +196,7 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div>
-          <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
+          <h3 className="border-b-2 border-neutral-100 pb-2 text-2xl font-medium text-cyan-600">
             Ensaio celular
           </h3>
           <p className="mt-2 rounded-lg bg-neutral-50 px-4 py-2">
@@ -205,7 +205,7 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div>
-          <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
+          <h3 className="border-b-2 border-neutral-100 pb-2 text-2xl font-medium text-cyan-600">
             Microbiologia
           </h3>
           <p className="mt-2 rounded-lg bg-neutral-50 px-4 py-2">
@@ -214,7 +214,7 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div>
-          <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
+          <h3 className="border-b-2 border-neutral-100 pb-2 text-2xl font-medium text-cyan-600">
             Atividade antifúngica
           </h3>
           <p className="mt-2 rounded-lg bg-neutral-50 px-4 py-2">
@@ -225,7 +225,7 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div>
-          <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
+          <h3 className="border-b-2 border-neutral-100 pb-2 text-2xl font-medium text-cyan-600">
             Propriedades Físico-Químicas
           </h3>
           <p className="mt-2 rounded-lg bg-neutral-50 px-4 py-2">
@@ -236,7 +236,7 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div>
-          <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
+          <h3 className="border-b-2 border-neutral-100 pb-2 text-2xl font-medium text-cyan-600">
             Publicações
           </h3>
           {publicacao.length > 0 ? (
@@ -246,11 +246,11 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
                 className="mt-2 flex flex-col gap-2 rounded-lg bg-neutral-50 px-4 py-2"
               >
                 <p>
-                  <span className="font-bold text-cyan-600">DOI: </span>
+                  <span className="font-medium text-cyan-600">DOI: </span>
                   {doi}
                 </p>
                 <p>
-                  <span className="font-bold text-cyan-600">Título: </span>
+                  <span className="font-medium text-cyan-600">Título: </span>
                   {titulo}
                 </p>
               </div>
@@ -263,7 +263,7 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         </div>
 
         <div>
-          <h3 className="border-b-2 border-neutral-100 pb-2 text-3xl font-bold text-cyan-600">
+          <h3 className="border-b-2 border-neutral-100 pb-2 text-2xl font-medium text-cyan-600">
             Características adicionais
           </h3>
           {caracteristicasAdicionais.length > 0 ? (
@@ -282,7 +282,6 @@ export default function Peptideo({ loaderData }: Route.ComponentProps) {
         <div className="flex items-center justify-center gap-2">
           {user?.isAdmin && user?.emailVerified && (
             <Link
-              prefetch="intent"
               to={`/peptideo/edit/${peptideo.id}`}
               className="flex w-min items-center gap-2 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-500 py-2 pr-4 pl-3 font-bold text-white"
             >

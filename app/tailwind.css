@@ -2,13 +2,13 @@
 @plugin '@tailwindcss/typography';
 
 @theme {
-  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif,
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html,
 body {
-  @apply overflow-y-scroll bg-gradient-to-l from-cyan-700 to-cyan-600;
+  @apply overflow-y-scroll bg-gradient-to-r from-cyan-800 to-cyan-600;
 }
 
 @utility prose-facility {

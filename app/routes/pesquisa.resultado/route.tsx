@@ -129,23 +129,23 @@ export default function Resultado({ loaderData }: Route.ComponentProps) {
                   <TbFlaskFilled /> Descoberta do LPPFB
                 </div>
               ) : (
-                <p className="text-neutral-900">
-                  <span className="font-bold">Banco de dados: </span>
+                <p className="text-neutral-800">
+                  <span className="font-medium">Banco de dados: </span>
                   {bancoDados ?? "(sem dados)"}
                 </p>
               )}
-              <p className="text-neutral-900">
-                <span className="font-bold">Nome popular: </span>
+              <p className="text-neutral-800">
+                <span className="font-medium">Nome popular: </span>
                 {nomesPopulares.filter((nome) => nome !== "NULL").length > 0
                   ? nomesPopulares?.join(", ")
                   : "(sem dados)"}
               </p>
-              <p className="text-neutral-900">
-                <span className="font-bold">Palavras-chave: </span>
+              <p className="text-neutral-800">
+                <span className="font-medium">Palavras-chave: </span>
                 {palavrasChave ?? "(sem dados)"}
               </p>
-              <p className="text-neutral-900">
-                <span className="font-bold">Funções biológicas: </span>
+              <p className="text-neutral-800">
+                <span className="font-medium">Funções biológicas: </span>
                 {funcaoBiologica.filter((value) => value !== "NULL").length > 0
                   ? funcaoBiologica?.join(", ")
                   : "(sem dados)"}

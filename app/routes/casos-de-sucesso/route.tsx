@@ -46,11 +46,11 @@ export default function CasosDeSucesso({ loaderData }: Route.ComponentProps) {
           ({ id, application, manufacturer, peptideProduct }) => (
             <li
               key={id}
-              className="flex flex-col gap-1 rounded-2xl bg-neutral-50 p-4"
+              className="flex flex-col gap-1 rounded-2xl bg-neutral-50 p-4 text-neutral-800"
             >
-              <p className="text-2xl font-bold">{peptideProduct}</p>
+              <p className="text-2xl font-medium">{peptideProduct}</p>
               <p>
-                <b>Fabricante:</b> {manufacturer ?? "(sem dados)"}
+                <span className="font-medium">Fabricante:</span> {manufacturer ?? "(sem dados)"}
               </p>
               {application !== undefined ? (
                 <p className="italic">{application}</p>
