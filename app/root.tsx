@@ -136,7 +136,7 @@ import { Form, NavLink } from "react-router";
 
 export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
   return (
-    <header className="bg-neutral-100 py-6 px-6 md:px-9 lg:px-14 flex flex-col gap-8">
+    <header className="flex flex-col gap-8 bg-neutral-100 px-6 py-6 md:px-9 lg:px-14">
       <div className="flex min-h-32 items-center justify-between">
         <a
           href="https://lppfb.ufms.br/"
@@ -184,14 +184,14 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
         )}
       </div>
       <nav className="contents">
-        <ul className="flex flex-wrap items-center justify-evenly gap-2 text-lg sm:justify-normal font-medium">
+        <ul className="flex flex-wrap items-center justify-evenly gap-2 text-lg font-medium sm:justify-normal">
           <li>
             <NavLink
               to="/"
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? "rounded-2xl text-cyan-800 font-bold bg-neutral-200"
+                    ? "rounded-2xl bg-neutral-200 font-bold text-cyan-800"
                     : ""
                 } p-3 underline-offset-4 hover:underline`
               }
@@ -205,7 +205,7 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? "rounded-2xl text-cyan-800 font-bold bg-neutral-200"
+                    ? "rounded-2xl bg-neutral-200 font-bold text-cyan-800"
                     : ""
                 } p-3 underline-offset-4 hover:underline`
               }
@@ -219,7 +219,7 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? "rounded-2xl text-cyan-800 font-bold bg-neutral-200"
+                    ? "rounded-2xl bg-neutral-200 font-bold text-cyan-800"
                     : ""
                 } p-3 underline-offset-4 hover:underline`
               }
@@ -233,7 +233,7 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? "rounded-2xl text-cyan-800 font-bold bg-neutral-200"
+                    ? "rounded-2xl bg-neutral-200 font-bold text-cyan-800"
                     : ""
                 } p-3 underline-offset-4 hover:underline`
               }
@@ -247,7 +247,7 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? "rounded-2xl text-cyan-800 font-bold bg-neutral-200"
+                    ? "rounded-2xl bg-neutral-200 font-bold text-cyan-800"
                     : ""
                 } p-3 underline-offset-4 hover:underline`
               }
@@ -261,7 +261,7 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? "rounded-2xl text-cyan-800 font-bold bg-neutral-200"
+                    ? "rounded-2xl bg-neutral-200 font-bold text-cyan-800"
                     : ""
                 } p-3 underline-offset-4 hover:underline`
               }
@@ -275,7 +275,7 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? "rounded-2xl text-cyan-800 font-bold bg-neutral-200"
+                    ? "rounded-2xl bg-neutral-200 font-bold text-cyan-800"
                     : ""
                 } p-3 underline-offset-4 hover:underline`
               }
@@ -289,7 +289,7 @@ export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? "rounded-2xl text-cyan-800 font-bold bg-neutral-200"
+                    ? "rounded-2xl bg-neutral-200 font-bold text-cyan-800"
                     : ""
                 } p-3 underline-offset-4 hover:underline`
               }

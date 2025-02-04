@@ -29,7 +29,7 @@ function GlossaryListItem({
   item: { name: string; definition: string; example: string };
 }) {
   return (
-    <li className="rounded-2xl text-neutral-800 bg-neutral-50 p-4">
+    <li className="rounded-2xl bg-neutral-50 p-4 text-neutral-800">
       <h2 className="text-xl font-medium">{item.name}</h2>
       <p>{item.definition}</p>
       <p>

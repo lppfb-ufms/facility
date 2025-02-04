@@ -86,14 +86,18 @@ export default function ListPanel({ loaderData }: Route.ComponentProps) {
 
 function ResultCount({
   promise,
-}: { promise: Route.ComponentProps["loaderData"]["query"] }) {
+}: {
+  promise: Route.ComponentProps["loaderData"]["query"];
+}) {
   const data = use(promise);
   return <p>{data.length} registros encontrados</p>;
 }
 
 function TableData({
   promise,
-}: { promise: Route.ComponentProps["loaderData"]["query"] }) {
+}: {
+  promise: Route.ComponentProps["loaderData"]["query"];
+}) {
   const data = use(promise);
 
   return (

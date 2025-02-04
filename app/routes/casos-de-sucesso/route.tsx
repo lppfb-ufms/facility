@@ -50,7 +50,8 @@ export default function CasosDeSucesso({ loaderData }: Route.ComponentProps) {
             >
               <p className="text-2xl font-medium">{peptideProduct}</p>
               <p>
-                <span className="font-medium">Fabricante:</span> {manufacturer ?? "(sem dados)"}
+                <span className="font-medium">Fabricante:</span>{" "}
+                {manufacturer ?? "(sem dados)"}
               </p>
               {application !== undefined ? (
                 <p className="italic">{application}</p>

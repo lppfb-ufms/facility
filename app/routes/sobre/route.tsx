@@ -33,7 +33,9 @@ export default function Sobre() {
           <li className="flex gap-3">
             <TbBrandX size="2.5rem" className="min-w-[2.5rem]" />
             <div className="flex flex-col justify-center">
-              <span className="font-medium">X (anteriormente conhecido como Twitter):</span>
+              <span className="font-medium">
+                X (anteriormente conhecido como Twitter):
+              </span>
               <a
                 className="text-cyan-600 hover:underline"
                 href="https://x.com/lppfb"

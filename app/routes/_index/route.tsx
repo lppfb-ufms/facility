@@ -8,7 +8,7 @@ export default function Index() {
       <div className="min-h-[40rem] overflow-x-hidden bg-[url('/images/static/molecula.png')] bg-contain bg-fixed bg-right bg-no-repeat">
         <div className="mx-16 my-16 flex flex-col items-center justify-around lg:flex-row">
           <div className="flex w-full flex-col gap-8 lg:min-w-2/5">
-            <h1 className="text-6xl text-pretty block font-medium text-white lg:w-96 lg:px-0">
+            <h1 className="block text-6xl font-medium text-pretty text-white lg:w-96 lg:px-0">
               Facility FoodTech do Cerrado-Pantanal
             </h1>
             <SearchBar />
@@ -28,7 +28,7 @@ export default function Index() {
         </div>
       </div>
       <div className="flex justify-center bg-white text-justify">
-        <div className="flex flex-col px-4 py-3 font-sans sm:p-10 md:max-w-[120ch] prose prose-facility">
+        <div className="prose prose-facility flex flex-col px-4 py-3 font-sans sm:p-10 md:max-w-[120ch]">
           <h2>Introdução</h2>
           <p>
             Bem-vindo ao nosso site dedicado à pesquisa biológica com enfoque
@@ -50,18 +50,20 @@ export default function Index() {
           <h2>Explorando o Site</h2>
           <ul>
             <li>
-              <span className="font-medium">Busca Especializada</span>: Utilize nossa barra de busca para
-              encontrar informações detalhadas sobre peptídeos, transcriptômica,
-              proteoma e genômica associados ao cerrado e pantanal.
+              <span className="font-medium">Busca Especializada</span>: Utilize
+              nossa barra de busca para encontrar informações detalhadas sobre
+              peptídeos, transcriptômica, proteoma e genômica associados ao
+              cerrado e pantanal.
             </li>
             <li>
-              <span className="font-medium">Categorias Específicas</span>: Navegue esses biomas, oferecendo
-              uma visão aprofundada e segmentada de nossas pesquisas.
+              <span className="font-medium">Categorias Específicas</span>:
+              Navegue esses biomas, oferecendo uma visão aprofundada e
+              segmentada de nossas pesquisas.
             </li>
             <li>
-              <span className="font-medium">Recursos Complementares</span>: Acesse o glossário de termos,
-              links para artigos científicos, referências e a seção de download
-              para aprofundar seus estudos.
+              <span className="font-medium">Recursos Complementares</span>:
+              Acesse o glossário de termos, links para artigos científicos,
+              referências e a seção de download para aprofundar seus estudos.
             </li>
           </ul>
           <p>
