@@ -10,9 +10,12 @@ import {
 } from "react-router";
 import "./tailwind.css";
 import type { ReactNode } from "react";
+import { TbLogin, TbLogout, TbUserCircle, TbUserPlus } from "react-icons/tb";
+import { Form, NavLink } from "react-router";
 import { auth } from "~/.server/auth";
 import { Container } from "~/components/container";
 import type { Route } from "./+types/root";
+import type { User } from "./db/schema";
 
 export const links: Route.LinksFunction = () => {
   return [
@@ -130,11 +133,7 @@ export function ErrorBoundary() {
   );
 }
 
-import type { User } from "lucia";
-import { TbLogin, TbLogout, TbUserCircle, TbUserPlus } from "react-icons/tb";
-import { Form, NavLink } from "react-router";
-
-export function Header({ user }: { user: Pick<User, "displayName"> | null }) {
+export function Header({ user }: { user: User | null }) {
   return (
     <header className="flex flex-col gap-8 bg-neutral-100 px-6 py-6 md:px-9 lg:px-14">
       <div className="flex min-h-32 items-center justify-between">

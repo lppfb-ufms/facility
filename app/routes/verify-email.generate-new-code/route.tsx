@@ -1,7 +1,8 @@
 import { eq } from "drizzle-orm";
 import { redirect } from "react-router";
-import { auth, generateEmailVerificationCode, lucia } from "~/.server/auth";
-import { transporter } from "~/.server/email";
+import { auth } from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
+import { generateEmailVerificationCode, transporter } from "~/.server/email";
 import { db } from "~/db/connection.server";
 import { emailVerificationCodeTable } from "~/db/schema";
 import type { Route } from "./+types/route";
@@ -10,16 +11,26 @@ export async function action({ request }: Route.ActionArgs) {
   const { user, session } = await auth(request);
 
   if (!session) {
-    const sessionCookie = lucia.createBlankSessionCookie();
     return redirect("/login", {
       headers: {
-        "Set-Cookie": sessionCookie.serialize(),
+        "Set-Cookie": await sessionCookie.serialize("", { maxAge: 0 }),
+      },
+    });
+  }
+
+  if (session.fresh) {
+    const sessionToken = await sessionCookie.parse(
+      request.headers.get("cookie"),
+    );
+    return redirect(request.url, {
+      headers: {
+        "Set-Cookie": await sessionCookie.serialize(sessionToken),
       },
     });
   }
 
   if (user.emailVerified) {
-    return null;
+    return redirect("/perfil");
   }
 
   const [lastCode] = await db

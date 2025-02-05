@@ -4,16 +4,11 @@ import type { Route } from "./+types/route";
 
 import { Form, redirect, useFetcher } from "react-router";
 import { auth } from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
 import { db } from "~/db/connection.server";
 import { userTable } from "~/db/schema";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const { user } = await auth(request);
-
-  if (!user) {
-    return redirect("/");
-  }
-
+export async function loader() {
   const users = await db
     .select({
       id: userTable.id,
@@ -29,9 +24,28 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export async function action({ request }: Route.ActionArgs) {
-  const { user } = await auth(request);
+  const { user, session } = await auth(request);
 
-  if (!user || !user.isAdmin) {
+  if (!session) {
+    return redirect("/login", {
+      headers: {
+        "Set-Cookie": await sessionCookie.serialize("", { maxAge: 0 }),
+      },
+    });
+  }
+
+  if (session.fresh) {
+    const sessionToken = await sessionCookie.parse(
+      request.headers.get("cookie"),
+    );
+    return redirect(request.url, {
+      headers: {
+        "Set-Cookie": await sessionCookie.serialize(sessionToken),
+      },
+    });
+  }
+
+  if (!user.isAdmin || !user.emailVerified) {
     return redirect("/");
   }
 
@@ -40,18 +54,14 @@ export async function action({ request }: Route.ActionArgs) {
   const id = formData.get("id");
   const isAdmin = formData.get("isAdmin");
 
-  if (!id || !action || typeof id !== "string" || typeof isAdmin !== "string") {
-    return null;
-  }
-
-  if (user.id === id) {
+  if (!id || Number.isNaN(Number(id)) || !isAdmin || user.id === Number(id)) {
     return null;
   }
 
   await db
     .update(userTable)
     .set({ isAdmin: isAdmin === "true" })
-    .where(eq(userTable.id, id));
+    .where(eq(userTable.id, Number(id)));
   return null;
 }
 

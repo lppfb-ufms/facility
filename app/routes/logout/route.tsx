@@ -1,20 +1,19 @@
 import type { Route } from "./+types/route";
 
 import { redirect } from "react-router";
-import { lucia } from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
 
 export async function action({ request }: Route.ActionArgs) {
   const cookieHeader = request.headers.get("Cookie");
-  const sessionId = lucia.readSessionCookie(cookieHeader ?? "");
+  const sessionId = await sessionCookie.parse(cookieHeader);
+
   if (!sessionId) {
-    return redirect("/login");
+    return redirect("/");
   }
 
-  await lucia.invalidateSession(sessionId);
-  const sessionCookie = lucia.createBlankSessionCookie();
   return redirect("/login", {
     headers: {
-      "Set-Cookie": sessionCookie.serialize(),
+      "Set-Cookie": await sessionCookie.serialize("", { maxAge: 0 }),
     },
   });
 }

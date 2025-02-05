@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { redirect } from "react-router";
-import { auth, lucia } from "~/.server/auth";
+import { auth } from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
 import { db } from "~/db/connection.server";
 import { userTable } from "~/db/schema";
 import type { Route } from "./+types/route";
@@ -9,19 +10,20 @@ export async function action({ params, request }: Route.ActionArgs) {
   const { session, user } = await auth(request);
 
   if (!session) {
-    const sessionCookie = lucia.createBlankSessionCookie();
     return redirect("/login", {
       headers: {
-        "Set-Cookie": sessionCookie.serialize(),
+        "Set-Cookie": await sessionCookie.serialize("", { maxAge: 0 }),
       },
     });
   }
 
   if (session.fresh) {
-    const sessionCookie = lucia.createSessionCookie(session.id);
+    const sessionToken = await sessionCookie.parse(
+      request.headers.get("cookie"),
+    );
     return redirect(request.url, {
       headers: {
-        "Set-Cookie": sessionCookie.serialize(),
+        "Set-Cookie": await sessionCookie.serialize(sessionToken),
       },
     });
   }
@@ -31,16 +33,16 @@ export async function action({ params, request }: Route.ActionArgs) {
   }
 
   const id = params.id;
-  if (!id) {
+  if (!id || Number.isNaN(Number(id))) {
     return { message: "Id inválido", ok: false };
   }
 
-  if (user.id === id) {
+  if (user.id === Number(id)) {
     return { message: "Operação inválida", ok: false };
   }
 
   const item = await db.query.userTable.findFirst({
-    where: eq(userTable.id, id),
+    where: eq(userTable.id, Number(id)),
   });
 
   if (!item) {
@@ -50,8 +52,4 @@ export async function action({ params, request }: Route.ActionArgs) {
   await db.delete(userTable).where(eq(userTable.id, item.id));
 
   return redirect("/admin/usuarios");
-}
-
-export async function loader() {
-  return redirect("/");
 }

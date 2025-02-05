@@ -4,7 +4,8 @@ import { eq } from "drizzle-orm";
 import { redirect } from "react-router";
 import { Form, Link } from "react-router";
 import { email, object, pipe, string } from "valibot";
-import { lucia } from "~/.server/auth";
+import { createSession, generateSessionToken } from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
 import { db } from "~/db/connection.server";
@@ -45,12 +46,12 @@ export async function action({ request }: Route.ActionArgs) {
     });
   }
 
-  const session = await lucia.createSession(user.id, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
+  const token = await generateSessionToken();
+  await createSession(token, user.id);
 
   return redirect("/", {
     headers: {
-      "Set-Cookie": sessionCookie.serialize(),
+      "Set-Cookie": await sessionCookie.serialize(token),
     },
   });
 }
