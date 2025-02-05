@@ -1,7 +1,6 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { parseWithValibot } from "conform-to-valibot";
 import { count, eq, gte } from "drizzle-orm";
-import { generateIdFromEntropySize } from "lucia";
 import type { Route } from "./+types/route";
 
 import { Form, redirect } from "react-router";
@@ -15,8 +14,9 @@ import {
   setSpecificMessage,
   string,
 } from "valibot";
-import { generateEmailVerificationCode, lucia } from "~/.server/auth";
-import { transporter } from "~/.server/email";
+import { createSession, generateSessionToken } from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
+import { generateEmailVerificationCode, transporter } from "~/.server/email";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
 import { db } from "~/db/connection.server";
@@ -69,14 +69,14 @@ export async function action({ request }: Route.ActionArgs) {
     algorithm: "argon2id",
   });
 
-  const userId = generateIdFromEntropySize(10);
-
-  await db.insert(userTable).values({
-    id: userId,
-    displayName,
-    email,
-    passwordHash,
-  });
+  const [{ userId }] = await db
+    .insert(userTable)
+    .values({
+      displayName,
+      email,
+      passwordHash,
+    })
+    .returning({ userId: userTable.id });
 
   const verificationCode = await generateEmailVerificationCode(userId, email);
   await transporter.sendMail({
@@ -85,12 +85,11 @@ export async function action({ request }: Route.ActionArgs) {
     text: `Seu código de verificação é: ${verificationCode}. Válido por 15 minutos.`,
   });
 
-  const session = await lucia.createSession(userId, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
-
+  const token = generateSessionToken();
+  createSession(token, userId);
   return redirect("/verify-email", {
     headers: {
-      "Set-Cookie": sessionCookie.serialize(),
+      "Set-Cookie": await sessionCookie.serialize(token),
     },
   });
 }

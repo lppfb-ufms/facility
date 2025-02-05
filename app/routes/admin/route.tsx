@@ -13,26 +13,28 @@ import {
 import type { Route } from "./+types/route";
 
 import { NavLink, Outlet, redirect } from "react-router";
-import { auth, lucia } from "~/.server/auth";
+import { auth } from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
 import { Container } from "~/components/container";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const { session, user } = await auth(request);
 
   if (!session) {
-    const sessionCookie = lucia.createBlankSessionCookie();
     return redirect("/login", {
       headers: {
-        "Set-Cookie": sessionCookie.serialize(),
+        "Set-Cookie": await sessionCookie.serialize("", { maxAge: 0 }),
       },
     });
   }
 
   if (session.fresh) {
-    const sessionCookie = lucia.createSessionCookie(session.id);
+    const sessionToken = await sessionCookie.parse(
+      request.headers.get("cookie"),
+    );
     return redirect(request.url, {
       headers: {
-        "Set-Cookie": sessionCookie.serialize(),
+        "Set-Cookie": await sessionCookie.serialize(sessionToken),
       },
     });
   }

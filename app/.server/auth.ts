@@ -1,107 +1,79 @@
-import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { eq } from "drizzle-orm";
-import {
-  Lucia,
-  TimeSpan,
-  type User,
-  generateIdFromEntropySize,
-  verifyRequestOrigin,
-} from "lucia";
-import { alphabet, generateRandomString, sha256 } from "oslo/crypto";
-import { encodeHex } from "oslo/encoding";
 import { db } from "~/db/connection.server";
 import {
-  emailVerificationCodeTable,
+  type Session,
+  type User,
   passwordResetTokenTable,
   sessionTable,
   userTable,
 } from "~/db/schema";
+import { sessionCookie } from "./cookie";
 
-const adapter = new DrizzlePostgreSQLAdapter(db, sessionTable, userTable);
-
-export const lucia = new Lucia(adapter, {
-  sessionExpiresIn: new TimeSpan(2, "w"),
-  getUserAttributes: (attributes) => ({
-    email: attributes.email,
-    emailVerified: attributes.emailVerified,
-    displayName: attributes.displayName,
-    createdAt: attributes.createdAt,
-    isAdmin: attributes.isAdmin,
-  }),
-});
-
-declare module "lucia" {
-  interface Register {
-    Lucia: typeof lucia;
-    DatabaseUserAttributes: {
-      email: string;
-      emailVerified: boolean;
-      displayName: string;
-      createdAt: Date;
-      isAdmin: boolean;
-    };
-  }
+export function generateSessionToken(): string {
+  return Bun.randomUUIDv7();
 }
 
-export async function generateEmailVerificationCode(
-  userId: string,
-  email: string,
-): Promise<string> {
-  await db
-    .delete(emailVerificationCodeTable)
-    .where(eq(emailVerificationCodeTable.userId, userId));
-  const code = generateRandomString(6, alphabet("0-9", "a-z"));
-  await db.insert(emailVerificationCodeTable).values({
-    userId,
-    email,
-    code,
-  });
-  return code;
-}
-
-export async function verifyVerificationCode(
-  user: User,
-  code: string,
-): Promise<boolean> {
-  const [databaseCode] = await db
-    .select({
-      code: emailVerificationCodeTable.code,
-      expiresAt: emailVerificationCodeTable.expiresAt,
-      email: emailVerificationCodeTable.email,
+export async function createSession(
+  token: string,
+  userId: number,
+): Promise<Session> {
+  const [session] = await db
+    .insert(sessionTable)
+    .values({
+      id: new Bun.CryptoHasher("sha256").update(token).digest("hex"),
+      userId,
     })
-    .from(emailVerificationCodeTable)
-    .where(eq(emailVerificationCodeTable.userId, user.id))
-    .limit(1);
-  if (!databaseCode || databaseCode.code !== code) {
-    return false;
-  }
+    .returning();
 
-  await db
-    .delete(emailVerificationCodeTable)
-    .where(eq(emailVerificationCodeTable.userId, user.id));
-
-  if (
-    databaseCode.expiresAt < new Date() ||
-    databaseCode.email !== user.email
-  ) {
-    return false;
-  }
-  return true;
+  return session;
 }
 
-export async function createPasswordResetToken(
-  userId: string,
-): Promise<string> {
-  await db
-    .delete(passwordResetTokenTable)
-    .where(eq(passwordResetTokenTable.userId, userId));
-  const tokenId = generateIdFromEntropySize(25); // 40 character
-  const tokenHash = encodeHex(await sha256(new TextEncoder().encode(tokenId)));
-  await db.insert(passwordResetTokenTable).values({
-    tokenHash,
-    userId,
-  });
-  return tokenId;
+export async function validateSession(
+  token: string,
+): Promise<
+  | { session: Session & { fresh: boolean }; user: User }
+  | { session: null; user: null }
+> {
+  const sessionId = new Bun.CryptoHasher("sha256").update(token).digest("hex");
+
+  const result = await db
+    .select({ user: userTable, session: sessionTable })
+    .from(sessionTable)
+    .innerJoin(userTable, eq(sessionTable.userId, userTable.id))
+    .where(eq(sessionTable.id, sessionId));
+
+  if (result.length < 1) {
+    return { session: null, user: null };
+  }
+  const { user, session } = result[0];
+  if (Date.now() >= session.expiresAt.getTime()) {
+    await db.delete(sessionTable).where(eq(sessionTable.id, session.id));
+    return { session: null, user: null };
+  }
+
+  let fresh = false;
+  if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 7) {
+    session.expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 14);
+    await db
+      .update(sessionTable)
+      .set({
+        expiresAt: session.expiresAt,
+      })
+      .where(eq(sessionTable.id, session.id));
+    fresh = true;
+  }
+
+  return { session: { ...session, fresh }, user };
+}
+
+export async function invalidateSession(token: string): Promise<void> {
+  const sessionId = new Bun.CryptoHasher("sha256").update(token).digest("hex");
+
+  await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
+}
+
+export async function invalidateUserSessions(userId: number): Promise<void> {
+  await db.delete(sessionTable).where(eq(sessionTable.userId, userId));
 }
 
 export async function auth(request: Request) {
@@ -110,20 +82,67 @@ export async function auth(request: Request) {
     const originHeader = request.headers.get("Origin");
     const hostHeader =
       request.headers.get("Host") ?? request.headers.get("X-Forwarded-Host");
-    if (
-      !originHeader ||
-      !hostHeader ||
-      !verifyRequestOrigin(originHeader, [hostHeader])
-    ) {
+    if (!verifyRequestOrigin(originHeader, hostHeader)) {
       return { user: null, session: null };
     }
   }
 
   const cookieHeader = request.headers.get("Cookie");
-  const sessionId = lucia.readSessionCookie(cookieHeader ?? "");
+  const sessionId = await sessionCookie.parse(cookieHeader);
   if (!sessionId) {
     return { user: null, session: null };
   }
 
-  return await lucia.validateSession(sessionId);
+  return await validateSession(sessionId);
+}
+
+function verifyRequestOrigin(origin: string | null, host: string | null) {
+  if (!origin || !host) {
+    return false;
+  }
+  const originHost = new URL(origin).host;
+  const hostUrl =
+    host.startsWith("http://") || host.startsWith("https://")
+      ? new URL(host)
+      : new URL(`https://${host}`);
+  if (originHost === hostUrl.host) {
+    return true;
+  }
+  return false;
+}
+
+export async function createPasswordResetToken(
+  userId: number,
+): Promise<string> {
+  await db
+    .delete(passwordResetTokenTable)
+    .where(eq(passwordResetTokenTable.userId, userId));
+  const tokenId = Bun.randomUUIDv7("base64url"); // 40 character
+  await db.insert(passwordResetTokenTable).values({
+    tokenHash: new Bun.CryptoHasher("sha256").update(tokenId).digest("hex"),
+    userId,
+  });
+  return tokenId;
+}
+
+export async function verifyPasswordResetToken(
+  token: string,
+): Promise<number | null> {
+  const tokenHash = new Bun.CryptoHasher("sha256").update(token).digest("hex");
+  const results = await db
+    .select({
+      userId: passwordResetTokenTable.userId,
+      expiresAt: passwordResetTokenTable.expiresAt,
+    })
+    .from(passwordResetTokenTable)
+    .where(eq(passwordResetTokenTable.tokenHash, tokenHash));
+  if (results.length < 1) {
+    return null;
+  }
+
+  const [{ userId, expiresAt }] = results;
+  if (!userId || expiresAt < new Date()) {
+    return null;
+  }
+  return userId;
 }

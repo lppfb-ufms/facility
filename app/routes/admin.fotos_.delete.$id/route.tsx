@@ -1,7 +1,8 @@
 import { rm } from "node:fs";
 import { eq } from "drizzle-orm";
 import { redirect } from "react-router";
-import { auth, lucia } from "~/.server/auth";
+import { auth } from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
 import { db } from "~/db/connection.server";
 import { imageMetadataTable } from "~/db/schema";
 import type { Route } from "./+types/route";
@@ -10,19 +11,20 @@ export async function action({ params, request }: Route.ActionArgs) {
   const { session, user } = await auth(request);
 
   if (!session) {
-    const sessionCookie = lucia.createBlankSessionCookie();
     return redirect("/login", {
       headers: {
-        "Set-Cookie": sessionCookie.serialize(),
+        "Set-Cookie": await sessionCookie.serialize("", { maxAge: 0 }),
       },
     });
   }
 
   if (session.fresh) {
-    const sessionCookie = lucia.createSessionCookie(session.id);
+    const sessionToken = await sessionCookie.parse(
+      request.headers.get("cookie"),
+    );
     return redirect(request.url, {
       headers: {
-        "Set-Cookie": sessionCookie.serialize(),
+        "Set-Cookie": await sessionCookie.serialize(sessionToken),
       },
     });
   }
@@ -59,8 +61,4 @@ export async function action({ params, request }: Route.ActionArgs) {
     .where(eq(imageMetadataTable.id, metadata.id));
 
   return redirect("/admin/fotos");
-}
-
-export async function loader() {
-  return redirect("/");
 }

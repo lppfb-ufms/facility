@@ -1,8 +1,6 @@
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { parseWithValibot } from "conform-to-valibot";
 import { eq } from "drizzle-orm";
-import { sha256 } from "oslo/crypto";
-import { encodeHex } from "oslo/encoding";
 import { redirect } from "react-router";
 import { Form } from "react-router";
 import {
@@ -13,43 +11,45 @@ import {
   pipe,
   string,
 } from "valibot";
-import { auth, lucia } from "~/.server/auth";
+import {
+  auth,
+  createSession,
+  generateSessionToken,
+  invalidateUserSessions,
+  verifyPasswordResetToken,
+} from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
 import { db } from "~/db/connection.server";
 import { passwordResetTokenTable, userTable } from "~/db/schema";
 import type { Route } from "./+types/route";
 
-export async function loader({ params, request }: Route.LoaderArgs) {
-  const token = params.token;
-  if (!token) {
-    return redirect("/password-reset");
-  }
+export async function loader({ request }: Route.LoaderArgs) {
   const { session } = await auth(request);
   if (session) {
     return redirect("/");
   }
   return null;
 }
-const schema = pipe(
-  object({
-    password: pipe(string(), minLength(8, "Mínimo de 8 caracteres")),
-    confirmPassword: string(),
-  }),
-  forward(
-    partialCheck(
-      [["password"], ["confirmPassword"]],
-      ({ confirmPassword, password }) => confirmPassword === password,
-      "Confirmação diferente da primeira senha.",
-    ),
-    ["confirmPassword"],
-  ),
-);
 
 export async function action({ request, params }: Route.ActionArgs) {
   const formData = await request.formData();
   const submission = parseWithValibot(formData, {
-    schema,
+    schema: pipe(
+      object({
+        password: pipe(string(), minLength(8, "Mínimo de 8 caracteres")),
+        confirmPassword: string(),
+      }),
+      forward(
+        partialCheck(
+          [["password"], ["confirmPassword"]],
+          ({ confirmPassword, password }) => confirmPassword === password,
+          "Confirmação diferente da primeira senha.",
+        ),
+        ["confirmPassword"],
+      ),
+    ),
   });
 
   if (submission.status !== "success") {
@@ -57,17 +57,12 @@ export async function action({ request, params }: Route.ActionArgs) {
   }
 
   const token = params.token;
-  const tokenHash = encodeHex(await sha256(new TextEncoder().encode(token)));
-
-  const dbToken = await db.query.passwordResetTokenTable.findFirst({
-    where: eq(passwordResetTokenTable.tokenHash, tokenHash),
-  });
-
-  if (!dbToken || dbToken.expiresAt < new Date()) {
+  const userId = await verifyPasswordResetToken(token);
+  if (!userId) {
     return submission.reply({ formErrors: ["Token inválido"] });
   }
 
-  await lucia.invalidateUserSessions(dbToken.userId);
+  await invalidateUserSessions(userId);
 
   const { password } = submission.value;
   const passwordHash = await Bun.password.hash(password, {
@@ -79,18 +74,18 @@ export async function action({ request, params }: Route.ActionArgs) {
   await db
     .update(userTable)
     .set({ passwordHash })
-    .where(eq(userTable.id, dbToken.userId));
+    .where(eq(userTable.id, userId));
 
   await db
     .delete(passwordResetTokenTable)
-    .where(eq(passwordResetTokenTable.userId, dbToken.userId));
+    .where(eq(passwordResetTokenTable.userId, userId));
 
-  const session = await lucia.createSession(dbToken.userId, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
+  const sessionToken = generateSessionToken();
+  await createSession(sessionToken, userId);
 
   return redirect("/", {
     headers: {
-      "Set-Cookie": sessionCookie.serialize(),
+      "Set-Cookie": await sessionCookie.serialize(sessionToken),
       "Referrer-Policy": "strict-origin",
     },
   });
@@ -98,10 +93,6 @@ export async function action({ request, params }: Route.ActionArgs) {
 
 export default function PasswordReset({ actionData }: Route.ComponentProps) {
   const [form, fields] = useForm({
-    defaultValue: {
-      password: "",
-      confirmPassword: "",
-    },
     lastResult: actionData,
   });
 

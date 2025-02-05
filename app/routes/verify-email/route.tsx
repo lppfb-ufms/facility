@@ -5,20 +5,37 @@ import type { Route } from "./+types/route";
 
 import { Form, redirect, useFetcher } from "react-router";
 import { object, string } from "valibot";
-import { auth, lucia, verifyVerificationCode } from "~/.server/auth";
+import {
+  auth,
+  createSession,
+  generateSessionToken,
+  invalidateUserSessions,
+} from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
+import { verifyVerificationCode } from "~/.server/email";
 import { Container } from "~/components/container";
 import { FormErrorMessage, SubmitButton, TextInput } from "~/components/form";
 import { db } from "~/db/connection.server";
 import { userTable } from "~/db/schema";
 
 export async function action({ request }: Route.ActionArgs) {
-  const { user } = await auth(request);
+  const { user, session } = await auth(request);
 
-  if (!user) {
-    const sessionCookie = lucia.createBlankSessionCookie();
+  if (!session) {
     return redirect("/login", {
       headers: {
-        "Set-Cookie": sessionCookie.serialize(),
+        "Set-Cookie": await sessionCookie.serialize("", { maxAge: 0 }),
+      },
+    });
+  }
+
+  if (session.fresh) {
+    const sessionToken = await sessionCookie.parse(
+      request.headers.get("cookie"),
+    );
+    return redirect(request.url, {
+      headers: {
+        "Set-Cookie": await sessionCookie.serialize(sessionToken),
       },
     });
   }
@@ -42,18 +59,18 @@ export async function action({ request }: Route.ActionArgs) {
     });
   }
 
-  await lucia.invalidateUserSessions(user.id);
+  await invalidateUserSessions(user.id);
   await db
     .update(userTable)
     .set({ emailVerified: true })
     .where(eq(userTable.id, user.id));
 
-  const session = await lucia.createSession(user.id, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
+  const token = await generateSessionToken();
+  await createSession(token, user.id);
 
   return redirect("/", {
     headers: {
-      "Set-Cookie": sessionCookie.serialize(),
+      "Set-Cookie": await sessionCookie.serialize(token),
     },
   });
 }
@@ -62,15 +79,25 @@ export async function loader({ request }: Route.LoaderArgs) {
   const { user, session } = await auth(request);
 
   if (!session) {
-    const sessionCookie = lucia.createBlankSessionCookie();
     return redirect("/login", {
       headers: {
-        "Set-Cookie": sessionCookie.serialize(),
+        "Set-Cookie": await sessionCookie.serialize("", { maxAge: 0 }),
       },
     });
   }
 
-  if (user?.emailVerified) {
+  if (session.fresh) {
+    const sessionToken = await sessionCookie.parse(
+      request.headers.get("cookie"),
+    );
+    return redirect(request.url, {
+      headers: {
+        "Set-Cookie": await sessionCookie.serialize(sessionToken),
+      },
+    });
+  }
+
+  if (user.emailVerified) {
     return redirect("/");
   }
 
