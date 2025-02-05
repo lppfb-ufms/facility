@@ -4,9 +4,9 @@ import type { Route } from "./+types/route";
 
 import { Form, redirect, useFetcher } from "react-router";
 import { auth } from "~/.server/auth";
+import { sessionCookie } from "~/.server/cookie";
 import { db } from "~/db/connection.server";
 import { userTable } from "~/db/schema";
-import { sessionCookie } from "~/.server/cookie";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const { user } = await auth(request);
