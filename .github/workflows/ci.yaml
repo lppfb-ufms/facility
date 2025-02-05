@@ -1,0 +1,126 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+      - renovate/*
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: install
+        run: bun install --frozen-lockfile
+      - name: build
+        run: bun run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build_artifact
+          path: build
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: install dependencies
+        run: bun install --frozen-lockfile
+      - name: run typecheck
+        run: bun typecheck
+      - name: run migration
+        run: bun db migrate
+
+  start:
+    runs-on: ubuntu-latest
+    needs: build
+    services:
+      postgres:
+        image: postgres:17.2-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: facility
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: build_artifact
+      - name: install dependencies
+        run: bun install --frozen-lockfile --prodution
+      - name: start
+        env:
+          NODE_ENV: production
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/facility
+          EMAIL_USER: "${{ secrets.EMAIL_USER }}"
+          EMAIL_PASS: "${{ secrets.EMAIL_PASS }}"
+        run: |
+          bun run start &
+          bun wait-on http://localhost:3000 -t 5s && echo ok
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: [start, test]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+      - name: setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: install dependencies
+        run: bun install --frozen-lockfile
+      - name: run biome
+        run: bun lint
+      - name: run prettier
+        run: bun format
+      - name: diff
+        id: diff
+        run: |
+          git add .
+          git diff --staged --quiet || echo "modified=true" >> $GITHUB_OUTPUT
+      - uses: planetscale/ghcommit-action@v0.2.5
+        name: commit
+        if: steps.diff.outputs.modified == 'true'
+        with:
+          commit_message: "chore: fix linting errors and format"
+          repo: ${{ github.repository }}
+          branch: ${{ github.head_ref || github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
