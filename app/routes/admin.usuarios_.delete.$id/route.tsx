@@ -32,17 +32,12 @@ export async function action({ params, request }: Route.ActionArgs) {
     return redirect("/");
   }
 
-  const id = params.id;
-  if (!id || Number.isNaN(Number(id))) {
-    return { message: "Id inválido", ok: false };
-  }
-
-  if (user.id === Number(id)) {
+  if (user.id === params.id) {
     return { message: "Operação inválida", ok: false };
   }
 
   const item = await db.query.userTable.findFirst({
-    where: eq(userTable.id, Number(id)),
+    where: eq(userTable.id, params.id),
   });
 
   if (!item) {

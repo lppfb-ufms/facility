@@ -200,7 +200,7 @@ export const caracteristicasAdicionaisRelations = relations(
 );
 
 export const userTable = pgTable("user", {
-  id: serial().primaryKey(),
+  id: text().primaryKey(),
   displayName: text().notNull(),
   email: text().notNull().unique(),
   passwordHash: text().notNull(),
@@ -219,14 +219,14 @@ export const emailVerificationCodeTable = pgTable("email_verification_code", {
   expiresAt: timestamp({ withTimezone: true, mode: "date" })
     .notNull()
     .default(sql`now() + interval '15 minutes'`),
-  userId: integer()
+  userId: text()
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
 });
 
 export const sessionTable = pgTable("session", {
   id: text().primaryKey(),
-  userId: integer()
+  userId: text()
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
   expiresAt: timestamp({
@@ -242,7 +242,7 @@ export type SessionInsert = typeof sessionTable.$inferInsert;
 
 export const passwordResetTokenTable = pgTable("password_reset_token", {
   tokenHash: text().notNull().unique(),
-  userId: integer()
+  userId: text()
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
   expiresAt: timestamp({ withTimezone: true, mode: "date" })

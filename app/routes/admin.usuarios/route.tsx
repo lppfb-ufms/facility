@@ -4,11 +4,17 @@ import type { Route } from "./+types/route";
 
 import { Form, redirect, useFetcher } from "react-router";
 import { auth } from "~/.server/auth";
-import { sessionCookie } from "~/.server/cookie";
 import { db } from "~/db/connection.server";
 import { userTable } from "~/db/schema";
+import { sessionCookie } from "~/.server/cookie";
 
-export async function loader() {
+export async function loader({ request }: Route.LoaderArgs) {
+  const { user } = await auth(request);
+
+  if (!user) {
+    return redirect("/");
+  }
+
   const users = await db
     .select({
       id: userTable.id,
@@ -54,14 +60,14 @@ export async function action({ request }: Route.ActionArgs) {
   const id = formData.get("id");
   const isAdmin = formData.get("isAdmin");
 
-  if (!id || Number.isNaN(Number(id)) || !isAdmin || user.id === Number(id)) {
+  if (!id || typeof id !== "string" || !isAdmin || user.id === id) {
     return null;
   }
 
   await db
     .update(userTable)
     .set({ isAdmin: isAdmin === "true" })
-    .where(eq(userTable.id, Number(id)));
+    .where(eq(userTable.id, id));
   return null;
 }
 

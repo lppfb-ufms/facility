@@ -72,6 +72,7 @@ export async function action({ request }: Route.ActionArgs) {
   const [{ userId }] = await db
     .insert(userTable)
     .values({
+      id: Bun.randomUUIDv7(),
       displayName,
       email,
       passwordHash,

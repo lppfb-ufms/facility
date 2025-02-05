@@ -15,7 +15,7 @@ export function generateSessionToken(): string {
 
 export async function createSession(
   token: string,
-  userId: number,
+  userId: string,
 ): Promise<Session> {
   const [session] = await db
     .insert(sessionTable)
@@ -72,7 +72,7 @@ export async function invalidateSession(token: string): Promise<void> {
   await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
 }
 
-export async function invalidateUserSessions(userId: number): Promise<void> {
+export async function invalidateUserSessions(userId: string): Promise<void> {
   await db.delete(sessionTable).where(eq(sessionTable.userId, userId));
 }
 
@@ -112,7 +112,7 @@ function verifyRequestOrigin(origin: string | null, host: string | null) {
 }
 
 export async function createPasswordResetToken(
-  userId: number,
+  userId: string,
 ): Promise<string> {
   await db
     .delete(passwordResetTokenTable)
@@ -127,7 +127,7 @@ export async function createPasswordResetToken(
 
 export async function verifyPasswordResetToken(
   token: string,
-): Promise<number | null> {
+): Promise<string | null> {
   const tokenHash = new Bun.CryptoHasher("sha256").update(token).digest("hex");
   const results = await db
     .select({

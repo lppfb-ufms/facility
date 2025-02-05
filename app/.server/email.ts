@@ -25,7 +25,7 @@ transporter.verify((error) => {
 export { transporter };
 
 export async function generateEmailVerificationCode(
-  userId: number,
+  userId: string,
   email: string,
 ): Promise<string> {
   await db
