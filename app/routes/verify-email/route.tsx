@@ -65,7 +65,7 @@ export async function action({ request }: Route.ActionArgs) {
     .set({ emailVerified: true })
     .where(eq(userTable.id, user.id));
 
-  const token = await generateSessionToken();
+  const token = generateSessionToken();
   await createSession(token, user.id);
 
   return redirect("/", {

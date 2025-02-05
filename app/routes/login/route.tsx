@@ -46,7 +46,7 @@ export async function action({ request }: Route.ActionArgs) {
     });
   }
 
-  const token = await generateSessionToken();
+  const token = generateSessionToken();
   await createSession(token, user.id);
 
   return redirect("/", {
