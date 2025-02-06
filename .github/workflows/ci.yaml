@@ -62,7 +62,7 @@ jobs:
           name: build_artifact
           path: build
       - name: install dependencies
-        run: bun install --frozen-lockfile --prodution
+        run: bun install --frozen-lockfile --production
       - name: start
         env:
           NODE_ENV: production
@@ -71,7 +71,7 @@ jobs:
           EMAIL_PASS: "${{ secrets.EMAIL_PASS }}"
         run: |
           bun run start &
-          bun wait-on http://localhost:3000 -t 5s && echo ok
+          bunx wait-on http://localhost:3000 -t 5s && echo ok
 
   lint:
     runs-on: ubuntu-latest
