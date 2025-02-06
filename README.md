@@ -1,51 +1,200 @@
-# templates/spa
+![GitHub Actions CI Badge](https://github.com/lppfb-ufms/facility/actions/workflows/ci.yaml/badge.svg)
 
-This template leverages [Remix SPA Mode](https://remix.run/docs/en/main/guides/spa-mode) to build your app as a Single-Page Application using [Client Data](https://remix.run/docs/en/main/guides/client-data) for all of your data loads and mutations.
+# Facility Food Tech do Cerrado e Pantanal
 
-## Setup
+## 📋 Pré-requisitos
+- Docker Engine (>=27.0)
+- Git
 
-```shellscript
-npx create-remix@latest --template remix-run/remix/templates/spa
+## 🔧 Instalação
+
+1. **Clone o repositório**
+
+```bash
+git clone https://github.com/lppfb-ufms/facility
+cd facility
 ```
 
-## Development
+2. **Defina as variáveis de ambiente**
 
-You can develop your SPA app just like you would a normal Remix app, via:
-
-```shellscript
-npm run dev
+```bash
+cp .env.example .env
 ```
 
-## Production
+Edite o arquivo `.env` com a sua configuração:
 
-When you are ready to build a production version of your app, `npm run build` will generate your assets and an `index.html` for the SPA.
-
-```shellscript
-npm run build
+```plaintext
+EMAIL_USER=email@example.com
+EMAIL_PASS=password
+SESSION_COOKIE_SECRET=secret
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/facility
+PGUSER=postgres
+PGPASSWORD=postgres
+PGDATABASE=facility
 ```
 
-### Preview
+**EMAIL_USER** e **EMAIL_PASS** são as credenciais de envio de e-mail através do Gmail, é necessário ativar a autenticação de duas etapas e gerar uma senha de app para o seu e-mail. Detalhes para fazer isso estão neste [artigo de suporte do Google](https://support.google.com/accounts/answer/185833?hl=pt-BR)
 
-You can preview the build locally with [vite preview](https://vitejs.dev/guide/cli#vite-preview) to serve all routes via the single `index.html` file:
+**SESSION_COOKIE_SECRET** é a chave secreta para assinar os cookies de sessão. Caso não informada, será gerada automaticamente, porém todos os cookies se tornarão inválidos ao reiniciar o servidor. Para gerar uma chave persistente utilize o seguinte comando no terminal:
 
-```shellscript
-npm run preview
+```bash
+head -c20 /dev/urandom | base64
 ```
 
-> [!IMPORTANT]
->
-> `vite preview` is not designed for use as a production server
+**DATABASE_URL**, **PGUSER**, **PGPASSWORD** e **PGDATABASE** são as credenciais de acesso ao banco de dados PostgreSQL. A URL de conexão é composta por `postgres://<user>:<password>@<host>:<port>/<database>`.
 
-### Deployment
+3. **Inicie a aplicação**
 
-You can then serve your app from any HTTP server of your choosing. The server should be configured to serve multiple paths from a single root `/index.html` file (commonly called "SPA fallback"). Other steps may be required if the server doesn't directly support this functionality.
-
-For a simple example, you could use [sirv-cli](https://www.npmjs.com/package/sirv-cli):
-
-```shellscript
-npx sirv-cli build/client/ --single
+No terminal, execute o comando:
+```bash
+docker compose up -d
 ```
 
-## Styling
+A aplicação estará disponível na porta HTTP padrão (80) do servidor.
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+## 🔄 Backup e restauração
+
+Backup do banco de dados
+
+```bash
+docker compose exec db pg_dump -U ${PGUSER} ${PGDATABASE} > facility_db_backup_$(date +%Y%m%d_%H%M%S).sql
+```
+
+Restaurar backup
+
+```bash
+cat backup_file.sql | docker compose exec -T db psql -U ${PGUSER} ${PGDATABASE}
+```
+
+Backup de fotos enviadas
+
+```bash
+zip -e facility_fotos_backup_$(date +%Y%m%d_%H%M%S).zip ./public/images/upload/
+```
+
+## 🔧 Manutenção
+
+**Atualize a aplicação**
+
+Quando houver atualizações no repositório, faça o pull e reinicie a aplicação:
+
+```bash
+git pull
+docker compose up -d --build
+```
+
+## 🛠️ Tecnologias utilizadas
+- [React](https://react.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [React Router](https://reactrouter.com/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Bun](https://bun.sh/)
+- [Docker](https://www.docker.com/)
+
+## 🗂️ Organização do projeto
+
+```
+|-- .github
+|   |-- workflows
+|   |   `-- ci.yaml
+|   `-- renovate.json
+|-- app
+|   |-- .server
+|   |   |-- auth.ts
+|   |   |-- cookie.ts
+|   |   |-- email.ts
+|   |   `-- index.ts
+|   |-- components
+|   |   |-- container.tsx
+|   |   `-- form.tsx
+|   |-- db
+|   |   |-- connection.server.ts
+|   |   `-- schema.ts
+|   |-- routes
+|   |   `-- (...).tsx
+|   |-- entry.server.tsx
+|   |-- root.tsx
+|   |-- routes.ts
+|   `-- tailwind.css
+|-- docs
+|   `-- (...).md
+|-- migrations
+|   |-- (...).sql
+|   |-- caso_sucesso.sql
+|   |-- facility.sql
+|   |-- fotos.sql
+|   |-- glossario.sql
+|   `-- sintetizados_lppfb.sql
+|-- public
+|   |-- images
+|   |   `-- static
+|   |       |-- img-01.jpg
+|   |       |-- img-02.jpg
+|   |       |-- logo.svg
+|   |       `-- molecula.png
+|   |-- favicon.png
+|   `-- favicon.svg
+|-- biome.json
+|-- bun.lock
+|-- docker-compose.yml
+|-- Dockerfile
+|-- drizzle.config.ts
+|-- package.json
+|-- react-router.config.ts
+|-- README.md
+|-- tsconfig.json
+`-- vite.config.ts
+```
+
+Este projeto está organizado de forma modular e organizada, visando facilitar tanto o desenvolvimento quanto a manutenção.  
+
+A pasta `.github` contém os arquivos de configuração do **GitHub Actions** para testes automatizados, e do **Renovate** para atualização automática de dependências.  
+
+A pasta `app` concentra os componentes da interface, as rotas da aplicação e a integração com o servidor. Os nomes de arquivo seguem a convenção de rotas do [@react-router/fs-routes](https://reactrouter.com/how-to/file-route-conventions).  
+
+A documentação do site é centralizada na pasta `docs`.  
+
+As migrações de banco de dados, essenciais para o controle de versões, ficam reunidas na pasta `migrations`, enquanto os arquivos e recursos estáticos, como imagens e ícones, estão disponíveis na pasta `public`.  
+
+Além disso, os arquivos de configuração, como os relativos ao *Docker*, *Vite* e *TypeScript*, refletem uma abordagem atual e escalável de desenvolvimento e implantação.
+
+## 💻 Desenvolvimento
+
+Crie um banco de dados local
+
+```bash
+docker run --name pg -e POSTGRES_USER=$usuario -e POSTGRES_PASSWORD=$senha -p 5432:5432 -d postgres
+docker exec -it pg psql -U $usuario -c "CREATE DATABASE $nome_bd"
+```
+
+Servidor de desenvolvimento
+
+```bash
+# instalar dependências
+bun install
+
+# iniciar o servidor
+bun dev
+```
+
+Operações de banco de dados
+
+```bash
+# aplicar alterações de schema no banco de dados
+bun run db push
+```
+
+Fazer build da aplicação
+
+```bash
+# build da aplicação
+bun run build
+
+# iniciar a aplicação
+bun start
+```
+
+## 👥 Equipe
+
+- Desenvolvedor - [@caixzn](https://github.com/caixzn)
