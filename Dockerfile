@@ -15,7 +15,7 @@ WORKDIR /app
 RUN bun run build
 
 FROM oven/bun:1
-COPY ./package.json bun.lock /app/
+COPY . /app/
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
 WORKDIR /app

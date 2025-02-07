@@ -37,8 +37,8 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   const validPassword = await Bun.password.verify(
-    user.passwordHash,
     submission.value.password,
+    user.passwordHash,
   );
   if (!validPassword) {
     return submission.reply({
