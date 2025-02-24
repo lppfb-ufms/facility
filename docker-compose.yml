@@ -5,6 +5,7 @@ services:
     environment:
       - POSTGRES_USER=${PGUSER}
       - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDATABASE}
     volumes:
       - facility_db:/var/lib/postgresql/data
 
