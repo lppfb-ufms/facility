@@ -34,7 +34,7 @@ jobs:
     needs: build
     services:
       postgres:
-        image: postgres:17.3-alpine
+        image: postgres:17.4-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
