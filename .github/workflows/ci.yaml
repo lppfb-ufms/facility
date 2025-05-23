@@ -108,7 +108,7 @@ jobs:
         run: |
           git add .
           git diff --staged --quiet || echo "modified=true" >> $GITHUB_OUTPUT
-      - uses: planetscale/ghcommit-action@v0.2.14
+      - uses: planetscale/ghcommit-action@v0.2.15
         name: commit
         if: steps.diff.outputs.modified == 'true'
         with:
